@@ -3,6 +3,7 @@ import { ITINERARIO } from "../data/itinerario";
 import { GIOVANNI, INFERMIERA, UROLOGIA_HUB } from "../data/persone";
 import { dataBreve, dataLunga } from "../engine/date";
 import { useDemo } from "../stato/contesto";
+import { SEDUTE_RIABILITAZIONE } from "../data/tratte";
 
 /** Foglio stampabile per Giovanni (A4). Stesso componente a schermo e in stampa. */
 export function Foglio() {
@@ -27,7 +28,7 @@ export function Foglio() {
         </p>
       )}
       <section className="sez" style={{ "--c": allo ? "var(--spoke)" : "var(--hub)" } as CSSProperties}>
-        <h2>{allo ? "Vicino a casa: 10 sedute a Schiavonia" : "10 sedute a Padova"}</h2>
+        <h2>{allo ? `Vicino a casa: ${SEDUTE_RIABILITAZIONE} sedute a Schiavonia` : `${SEDUTE_RIABILITAZIONE} sedute a Padova`}</h2>
         <p>
           {allo ? it.luogo_spoke : "Ospedale di Padova – Medicina riabilitativa"} · ore {it.ora_sedute} · martedì e venerdì
         </p>

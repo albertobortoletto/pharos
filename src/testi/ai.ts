@@ -125,3 +125,24 @@ export const FLUSSO = [
   { id: "decisione", testo: "Decisione del medico", modello: null },
   { id: "scelta", testo: "Scelta del paziente", modello: null },
 ] as const;
+
+/** Ramo laterale e ciclo di ritorno dello schema. */
+export const FLUSSO_LATERALE = {
+  markov: "Catena di Markov: previsione dei posti della rete",
+  mappa: "Mappa: dove mancheranno posti",
+  esito: "Esito della fase",
+  aggiorna: "Aggiorna i modelli (smoothing di Laplace)",
+};
+
+export const TITOLI_SCHEDA_MODELLO = {
+  aCosaServe: "A cosa serve",
+  ingressi: "Dati in ingresso",
+  restituisce: "Cosa restituisce",
+  chiLoVede: "Chi lo vede",
+  nonFa: "Cosa NON fa",
+  limiti: "Limiti",
+  esempio: "Esempio dal vivo su Giovanni",
+};
+
+export const NOTA_CPT = "stime iniziali illustrative";
+

@@ -2,7 +2,7 @@ import { useState, type CSSProperties } from "react";
 import { Building2, Check, ClipboardList, Hospital, Lightbulb, Undo2, X } from "lucide-react";
 import { CASO_LUIGI } from "../data/casoLuigi";
 import { LUIGI } from "../data/persone";
-import { MOTIVI_HUB, MOTIVI_SPOKE, REGISTRO_VOCI } from "../data/motivi";
+import { FINESTRA_REGISTRO_GIORNI, MOTIVI_HUB, MOTIVI_SPOKE, REGISTRO_VOCI } from "../data/motivi";
 import type { VoceRegistro } from "../data/tipi";
 import { contaMotivi } from "../engine/registro";
 import { contoViaggio } from "../engine/viaggio";
@@ -29,7 +29,7 @@ export function RegistroMotivi({ evidenzia }: { evidenzia?: string | null }) {
         <span className="etichetta allarme maiusc">Simulazione · pazienti fittizi</span>
       </div>
       <p className="muted" style={{ margin: "0 0 10px", fontWeight: 600, fontSize: 18 }}>
-        Ultimi 30 giorni: chi resta all'hub, gli spoke che non possono, «serve l'hub». Elenco chiuso, nessun testo libero.
+        Ultimi {FINESTRA_REGISTRO_GIORNI} giorni: chi resta all'hub, gli spoke che non possono, «serve l'hub». Elenco chiuso, nessun testo libero.
       </p>
       <div className="barre">
         {barre.map((b) => (
@@ -156,7 +156,7 @@ export default function Scena6ServeHub() {
             <div className="segnale">
               <Lightbulb size={24} aria-hidden="true" style={{ flex: "none" }} />
               <span>
-                Cosa dicono i motivi alla Rete oncologica: <b>{mancanoPosti} volte</b> in 30 giorni mancavano posti o date a Schiavonia, lì servono posti di
+                Cosa dicono i motivi alla Rete oncologica: <b>{mancanoPosti} volte</b> in {FINESTRA_REGISTRO_GIORNI} giorni mancavano posti o date a Schiavonia, lì servono posti di
                 riabilitazione.
                 {evidenzia === "clinico" && (
                   <>

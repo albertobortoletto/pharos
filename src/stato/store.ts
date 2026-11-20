@@ -12,6 +12,7 @@ import { dataDaOra, oraDaData, ORA_INIZIO } from "../engine/orologio";
 import { dataLunga } from "../engine/date";
 import { eventiDaTimer, nuovaScheda, transizione, STATI_PRESA_IN_CARICO, type EventoScheda, type Scheda, type StatoScheda } from "../engine/scheda";
 import { scadenzaParere, type Parere, type RispostaParere } from "../engine/pareri";
+import type { IdModello } from "../testi/ai";
 import { SCENE, type AzioneRacconto, type EsitoRichiamo, type StatoRacconto } from "./racconto";
 
 export type Vista = "mappa" | "hub" | "spoke" | "paziente" | "ai" | "racconto";
@@ -56,6 +57,19 @@ export interface StatoMappa {
   lampeggio: number;
 }
 
+export interface StatoAi {
+  /** Modello in primo piano (dal link «Come è calcolato?»). */
+  modello: IdModello | null;
+  /** Evidenza di Giovanni accesa sul grafo della rete bayesiana. */
+  evidenza: boolean;
+  /** Nodo del grafo di cui si vede la tabella di probabilità. */
+  nodo: string | null;
+  /** Vista da cui si è arrivati, per «Torna indietro». */
+  ritorno: { vista: Vista; sezione: SezioneHub } | null;
+}
+
+export const AI_INIZIALE: StatoAi = { modello: null, evidenza: true, nodo: "rientro_hub", ritorno: null };
+
 export interface Stato {
   versione: 3;
   vista: Vista;
@@ -85,6 +99,7 @@ export interface Stato {
   mappa: StatoMappa;
   pazienteSelezionato: string;
   sezioneHub: SezioneHub;
+  ai: StatoAi;
 }
 
 export const MAPPA_INIZIALE: StatoMappa = {
@@ -144,6 +159,7 @@ export function statoIniziale(): Stato {
     mappa: MAPPA_INIZIALE,
     pazienteSelezionato: "giovanni",
     sezioneHub: "pazienti",
+    ai: AI_INIZIALE,
   };
 }
 
@@ -153,6 +169,9 @@ export type Azione =
   | AzioneRacconto
   | { t: "vista"; vista: Vista; paziente?: string; sezione?: SezioneHub }
   | { t: "sezione_hub"; sezione: SezioneHub }
+  | { t: "apri_ai"; modello: IdModello }
+  | { t: "ai"; patch: Partial<StatoAi> }
+  | { t: "torna" }
   | { t: "tempo"; ore: number }
   | { t: "proponi_giovanni"; struttura: string; seconda: string | null }
   | { t: "posti_dichiarati"; struttura: string; n: number }
@@ -353,9 +372,27 @@ export function reducer(st: Stato, a: Azione): Stato {
 
     // — viste per ruolo —
     case "vista":
-      return { ...st, vista: a.vista, pazienteSelezionato: a.paziente ?? st.pazienteSelezionato, sezioneHub: a.sezione ?? st.sezioneHub };
+      return {
+        ...st,
+        vista: a.vista,
+        pazienteSelezionato: a.paziente ?? st.pazienteSelezionato,
+        sezioneHub: a.sezione ?? st.sezioneHub,
+        ai: a.vista === st.vista ? st.ai : { ...st.ai, modello: null, ritorno: null },
+      };
     case "sezione_hub":
       return { ...st, sezioneHub: a.sezione };
+    case "apri_ai":
+      return {
+        ...st,
+        vista: "ai",
+        ai: { ...st.ai, modello: a.modello, ritorno: st.vista === "ai" ? st.ai.ritorno : { vista: st.vista, sezione: st.sezioneHub } },
+      };
+    case "ai":
+      return { ...st, ai: { ...st.ai, ...a.patch } };
+    case "torna": {
+      const r = st.ai.ritorno;
+      return r ? { ...st, vista: r.vista, sezioneHub: r.sezione, ai: { ...st.ai, ritorno: null, modello: null } } : st;
+    }
     case "tempo":
       return avanzaTempo(st, a.ore);
     case "posti_dichiarati": {
