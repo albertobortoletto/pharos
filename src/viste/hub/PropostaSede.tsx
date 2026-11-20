@@ -8,7 +8,7 @@ import { GIOVANNI } from "../../data/persone";
 import { strutturaPerId } from "../../data/strutture";
 import { CONDIZIONI_RIENTRO, MOTIVI_HUB, MOTIVI_SPOKE } from "../../data/motivi";
 import { NOMI_PESI, PESI_PREDEFINITI, NOTA_PESI, type Pesi } from "../../data/pesi";
-import { abbina, type Candidato } from "../../engine/matching";
+import { abbina, type Abbinamento, type Candidato } from "../../engine/matching";
 import { livelloSaturazione } from "../../engine/markov";
 import { percento } from "../../engine/spiegazioni";
 import { NOME_STATO, STATI_PRESA_IN_CARICO } from "../../engine/scheda";
@@ -274,6 +274,41 @@ function StatoProposta() {
   );
 }
 
+/** Elenco ordinato + escluse: la stessa scheda di spiegazione in vista Hub e sulla mappa («Perché Schiavonia?»). */
+export function ElencoStrutture({ ordinate, escluse }: Abbinamento) {
+  return (
+    <>
+      <h2 className="titolo-col">
+        Strutture con requisiti e posti, ordinate <Simulato />
+      </h2>
+      <div className="legenda-voci">
+        {VOCI.map((v) => (
+          <span key={v}>
+            <i className={`pallino-voce voce-${v}`} /> {NOMI_PESI[v]}
+          </span>
+        ))}
+      </div>
+      <ol className="candidati">
+        {ordinate.map((c, i) => (
+          <CartaCandidato key={c.struttura.id} c={c} i={i} />
+        ))}
+      </ol>
+      {escluse.length > 0 && (
+        <div className="escluse" data-testid="escluse">
+          <h3>Escluse, con il motivo</h3>
+          <ul>
+            {escluse.map((e) => (
+              <li key={e.struttura.id} data-testid={`esclusa-${e.struttura.id}`}>
+                <CircleSlash size={18} aria-hidden="true" /> <b>{e.struttura.nome}</b>: {e.motivo}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </>
+  );
+}
+
 export function PropostaSede() {
   const { st } = useStore();
   const { ordinate, escluse } = useAbbinamentoGiovanni();
@@ -296,33 +331,7 @@ export function PropostaSede() {
       <StatoProposta />
       <div className="griglia g-7-5">
         <div className="colonna">
-          <h2 className="titolo-col">
-            Strutture con requisiti e posti, ordinate <Simulato />
-          </h2>
-          <div className="legenda-voci">
-            {VOCI.map((v) => (
-              <span key={v}>
-                <i className={`pallino-voce voce-${v}`} /> {NOMI_PESI[v]}
-              </span>
-            ))}
-          </div>
-          <ol className="candidati">
-            {ordinate.map((c, i) => (
-              <CartaCandidato key={c.struttura.id} c={c} i={i} />
-            ))}
-          </ol>
-          {escluse.length > 0 && (
-            <div className="escluse" data-testid="escluse">
-              <h3>Escluse, con il motivo</h3>
-              <ul>
-                {escluse.map((e) => (
-                  <li key={e.struttura.id} data-testid={`esclusa-${e.struttura.id}`}>
-                    <CircleSlash size={18} aria-hidden="true" /> <b>{e.struttura.nome}</b>: {e.motivo}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          <ElencoStrutture ordinate={ordinate} escluse={escluse} />
           {bozza && <Decisione ordinate={ordinate} />}
         </div>
         <div className="colonna">

@@ -252,3 +252,74 @@
 .piccolo-btn { padding: 6px 12px !important; font-size: 16px !important; justify-self: start; }
 .bolla.vuota { opacity: .7; font-style: italic; }
 .timeline li:not(.tl-attuale):not(.tl-fatta) .tl-chi { background: var(--grigio-chiaro); font-weight: 600; }
+
+/* ——— Mappa ——— */
+.vista-mappa .main, .app.vista-mappa .main { padding-top: 10px; }
+.mappa-griglia { display: grid; grid-template-columns: minmax(0, 1fr) 560px; gap: 22px; align-items: start; }
+.mappa-titolo h1 { font-size: 40px; margin: 0; line-height: 1.1; letter-spacing: -0.02em; animation: entra .5s var(--ease); }
+.mappa-titolo p { margin: 4px 0 8px; color: var(--grigio); font-weight: 600; font-size: 20px; }
+.mappa-svg { position: relative; background: #f7fafd; border: 1px solid var(--bordo); border-radius: var(--r-card); overflow: hidden; }
+.mappa-svg svg { display: block; width: 100%; height: auto; max-height: 790px; margin: 0 auto; }
+.provincia { fill: #eaf0f6; stroke: #b8c6d6; }
+.regione { fill: none; stroke: #5a6b80; }
+.sigla-prov { fill: #9aabbf; font-weight: 700; text-anchor: middle; letter-spacing: .12em; pointer-events: none; }
+.link-ictus { stroke: #7a5cb0; opacity: .75; }
+.link-onco { stroke: #c9a400; }
+.link-onco.pilota { stroke: #e0a100; stroke-linecap: round; }
+.tratta-oggi { stroke: #4474b4; stroke-linecap: round; }
+.tratta-proposta { stroke: #356b24; stroke-linecap: round; }
+.etichetta-tratta { fill: #3a66a3; font-weight: 700; paint-order: stroke; stroke: #fff; stroke-width: 4px; text-anchor: middle; }
+.etichetta-tratta.proposta { fill: #356b24; }
+.casa { fill: var(--paziente); stroke: #fff; stroke-width: 2.5px; }
+.nodo { cursor: pointer; transition: opacity .3s; }
+.nodo.spento { opacity: .3; }
+.pallino-nodo { stroke: #fff; transition: fill .5s; }
+.nodo.sel .pallino-nodo { stroke: var(--notte); }
+.etichetta-nodo { fill: #3c4a5c; font-weight: 600; paint-order: stroke; stroke: #fff; stroke-width: 4px; pointer-events: none; }
+.etichetta-nodo.forte { fill: var(--notte); font-weight: 700; }
+.pulsa { fill: none; stroke: #7a5cb0; animation: pulsa 1.4s ease-out 2; transform-box: fill-box; transform-origin: center; opacity: 0; }
+@keyframes pulsa { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(4.5); opacity: 0; } }
+.fumetto-belluno { animation: fumetto 7s ease forwards; pointer-events: none; }
+.fumetto-belluno rect { fill: #7a5cb0; }
+.fumetto-belluno text { fill: #fff; font-weight: 700; font-size: 17px; }
+@keyframes fumetto { 0% { opacity: 0; } 8% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; } }
+.tooltip-nodo { position: absolute; z-index: 5; pointer-events: none; background: #fff; border: 2px solid var(--notte); border-radius: var(--r-btn); padding: 8px 12px; box-shadow: var(--ombra-attiva); display: grid; gap: 2px; font-size: 16px; max-width: 360px; }
+.tooltip-nodo small { color: var(--grigio); font-weight: 600; }
+.didascalia-onco { position: absolute; right: 16px; bottom: 74px; max-width: 420px; background: #fffbe6; border: 2px solid #e0a100; border-radius: var(--r-btn); padding: 10px 14px; font-weight: 700; font-size: 19px; display: grid; gap: 4px; }
+.didascalia-onco small { font-weight: 600; color: var(--grigio); font-size: 15px; }
+.fonti-mappa { position: absolute; left: 14px; bottom: 10px; display: grid; gap: 2px; font-size: 13px; color: var(--grigio); background: #ffffffd9; padding: 6px 10px; border-radius: 8px; max-width: 70%; }
+.fonti-mappa b { color: var(--notte); font-size: 14px; }
+.mappa-destra { display: grid; gap: 14px; }
+.mappa-destra .card { padding: 16px 20px; }
+.passi-mappa { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.passi-mappa li { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 19px; color: var(--grigio); padding: 2px 0; }
+.passi-mappa li button { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; border: 2px solid var(--bordo); background: #fff; border-radius: var(--r-btn); padding: 8px 12px; font-weight: 700; font-size: 19px; color: var(--notte); }
+.passi-mappa li.prossimo button { border-color: var(--notte); box-shadow: 0 0 0 3px var(--accento); }
+.passi-mappa li.fatto button { background: var(--grigio-chiaro); }
+.passi-mappa .n { display: inline-grid; place-items: center; flex: none; width: 28px; height: 28px; border-radius: 50%; border: 2px solid currentColor; font-size: 15px; }
+.passi-mappa li.fatto .n { background: var(--spoke); border-color: var(--spoke); color: #fff; }
+.passo-cursore { align-items: flex-start !important; color: var(--notte) !important; border: 2px solid var(--bordo); border-radius: var(--r-btn); padding: 8px 12px !important; }
+.passo-cursore.prossimo { border-color: var(--notte); box-shadow: 0 0 0 3px var(--accento); }
+.passo-cursore label { flex: 1; display: grid; gap: 6px; }
+.passo-cursore input[type=range] { width: 100%; accent-color: var(--paziente); }
+.tacche { display: flex; justify-content: space-between; font-size: 14px; color: var(--grigio); }
+.tacche .attiva { color: var(--notte); font-weight: 700; }
+.frase-previsione { display: grid; gap: 4px; border-left: 8px solid var(--spoke); font-size: 18px; }
+.frase-previsione b { font-size: 21px; }
+.frase-previsione.liv-arancione { border-left-color: var(--paziente); background: var(--paziente-tinta); }
+.frase-previsione.liv-rosso { border-left-color: var(--allarme); background: var(--allarme-tinta); }
+.conto-mappa h2 { font-size: 21px; }
+.conto-righe { display: grid; gap: 4px; font-size: 19px; margin-bottom: 6px; }
+.conto-righe .oggi b { color: var(--hub-testo); }
+.conto-righe .proposta b { color: var(--spoke-testo); }
+.dati-nodo { display: grid; gap: 4px; margin-top: 8px; font-size: 17px; }
+.legenda-mappa h2 { font-size: 20px; margin-bottom: 6px; }
+.legenda-mappa .spunta { font-size: 17px; margin: 2px 0; }
+.legenda-simboli { display: grid; gap: 4px; margin-top: 8px; font-size: 15px; color: var(--grigio); }
+.sim { display: inline-block; width: 14px; height: 14px; border-radius: 50%; vertical-align: -2px; margin-right: 4px; border: 2px solid #fff; box-shadow: 0 0 0 1px var(--bordo); }
+.sim.hub-eu { background: #4474b4; width: 18px; height: 18px; vertical-align: -4px; }
+.sim.hub-prov { background: #4474b4; }
+.sim.altro { background: #8aa0b8; width: 11px; height: 11px; }
+.sim.linea-ictus { width: 22px; height: 0; border-radius: 0; border: 0; border-top: 3px dashed #7a5cb0; box-shadow: none; vertical-align: 3px; }
+.velo { position: fixed; inset: 0; z-index: 50; background: #1b263380; display: grid; place-items: center; padding: 40px; animation: entra .25s var(--ease); }
+.finestra { background: var(--grigio-chiaro); border-radius: var(--r-card); padding: 20px 24px; width: min(1500px, 100%); max-height: 92vh; overflow: auto; box-shadow: 0 20px 60px #0004; display: grid; gap: 14px; }
