@@ -1,7 +1,9 @@
 import type { Motivo, VoceRegistro } from "./tipi";
 
-export const NOTA_REGISTRO =
-  "SIMULAZIONE: voci inventate, pazienti fittizi, ultimi 30 giorni. Elenco chiuso, nessun testo clinico libero.";
+/** Finestra del registro dei motivi (giorni): «ultimi 30 giorni». */
+export const FINESTRA_REGISTRO_GIORNI = 30;
+
+export const NOTA_REGISTRO = `SIMULAZIONE: voci inventate, pazienti fittizi, ultimi ${FINESTRA_REGISTRO_GIORNI} giorni. Elenco chiuso, nessun testo clinico libero.`;
 
 /** Motivi dell'hub: resta all'hub / serve l'hub. Elenco chiuso. */
 export const MOTIVI_HUB: Motivo[] = [

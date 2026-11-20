@@ -1,7 +1,7 @@
 import { useState, type CSSProperties } from "react";
 import { ArrowRight, Check, CircleSlash, Hospital, MapPin, Undo2, X } from "lucide-react";
 import { GIOVANNI } from "../data/persone";
-import { prestazione } from "../data/pdta";
+import { PARAMETRI, prestazione } from "../data/pdta";
 import { STRUTTURE, strutturaPerId } from "../data/strutture";
 import { SEDUTE_RIABILITAZIONE } from "../data/tratte";
 import { MOTIVI_HUB } from "../data/motivi";
@@ -117,9 +117,9 @@ export default function Scena2Sede({ vai }: { vai: (n: number) => void }) {
       />
       <div className="griglia g-5-7">
         <div className="card bordo" style={{ "--c": "var(--hub)" } as CSSProperties}>
-          <h2>Riabilitazione del pavimento pelvico · 10 sedute</h2>
+          <h2>Riabilitazione del pavimento pelvico · {SEDUTE_RIABILITAZIONE} sedute</h2>
           <p className="muted" style={{ margin: "-6px 0 14px", fontWeight: 600 }}>
-            Entro 30 giorni dalla dimissione · Giovanni R., 70 anni, Montagnana
+            Entro {PARAMETRI.attesa_max_spoke_giorni} giorni dalla dimissione · Giovanni R., 70 anni, Montagnana
           </p>
           <button
             className={`opzione ${s.sede === "schiavonia" ? "scelta" : ""}`}

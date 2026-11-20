@@ -31,6 +31,8 @@ export function caricaSalvataggio(): Stato | null {
       typeof t.controlli === "object" &&
       t.mappa &&
       typeof t.sezioneHub === "string" &&
+      t.ai &&
+      typeof t.ai.evidenza === "boolean" &&
       t.pesi &&
       Array.isArray(t.notifiche) &&
       Array.isArray(t.pareri);

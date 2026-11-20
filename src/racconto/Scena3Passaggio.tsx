@@ -10,6 +10,7 @@ import { api } from "../data/api";
 import { dataBreve } from "../engine/date";
 import { useDemo } from "../stato/contesto";
 import { BadgeResp, Testata } from "../componenti/comuni";
+import { SEDUTE_RIABILITAZIONE } from "../data/tratte";
 
 const frase = (id: string) => ESTRAZIONE.righe.find((r) => r.id === id)!.frase;
 
@@ -142,7 +143,7 @@ export default function Scena3Passaggio({ vai }: { vai: (n: number) => void }) {
             <li>
               <Check size={22} color="var(--spoke-testo)" strokeWidth={3} aria-hidden="true" />
               <span>
-                <b>10 sedute di riabilitazione del pavimento pelvico</b> dal {dataBreve(ITINERARIO.sedute[0])}, ore {ITINERARIO.ora_sedute}
+                <b>{SEDUTE_RIABILITAZIONE} sedute di riabilitazione del pavimento pelvico</b> dal {dataBreve(ITINERARIO.sedute[0])}, ore {ITINERARIO.ora_sedute}
               </span>
             </li>
             <li>
@@ -159,7 +160,7 @@ export default function Scena3Passaggio({ vai }: { vai: (n: number) => void }) {
           {!chiediMotivo && s.passaggio !== "rifiutato" && (
             <div className="confini">
               <div>
-                <b>Diventa dello spoke</b>Le 10 sedute e la segnalazione delle condizioni di rientro
+                <b>Diventa dello spoke</b>Le {SEDUTE_RIABILITAZIONE} sedute e la segnalazione delle condizioni di rientro
               </div>
               <div>
                 <b>Resta all'hub</b>Controllo del {controllo}, percorso oncologico, parere e rientro

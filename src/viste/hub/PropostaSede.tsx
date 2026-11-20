@@ -43,7 +43,7 @@ export function useAbbinamentoGiovanni() {
   );
 }
 
-function BarraPunteggio({ c }: { c: Candidato }) {
+export function BarraPunteggio({ c }: { c: Candidato }) {
   return (
     <div className="barra-punteggio" role="img" aria-label={`Punteggio ${Math.round(c.punteggio * 100)} su 100`}>
       {VOCI.map((v) => (
@@ -92,7 +92,7 @@ function CartaCandidato({ c, i }: { c: Candidato; i: number }) {
   );
 }
 
-function PannelloPesi() {
+export function PannelloPesi() {
   const { st, d } = useStore();
   const cambia = (k: keyof Pesi, v: number) => d({ t: "pesi", pesi: { ...st.pesi, [k]: v } });
   const predefiniti = VOCI.every((v) => st.pesi[v] === PESI_PREDEFINITI[v]);

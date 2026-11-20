@@ -323,3 +323,54 @@
 .sim.linea-ictus { width: 22px; height: 0; border-radius: 0; border: 0; border-top: 3px dashed #7a5cb0; box-shadow: none; vertical-align: 3px; }
 .velo { position: fixed; inset: 0; z-index: 50; background: #1b263380; display: grid; place-items: center; padding: 40px; animation: entra .25s var(--ease); }
 .finestra { background: var(--grigio-chiaro); border-radius: var(--r-card); padding: 20px 24px; width: min(1500px, 100%); max-height: 92vh; overflow: auto; box-shadow: 0 20px 60px #0004; display: grid; gap: 14px; }
+
+/* ——— Come ragiona il sistema ——— */
+.vista-ai { display: grid; gap: 18px; }
+.vista-ai .testata h1 { font-size: 40px; }
+.flusso { width: 100%; height: auto; display: block; }
+.box-flusso rect { fill: #fff; stroke: var(--bordo); stroke-width: 2; }
+.box-flusso.cliccabile { cursor: pointer; }
+.box-flusso.cliccabile rect { fill: var(--accento-tinta); stroke: #e9d36a; }
+.box-flusso.cliccabile:hover rect, .box-flusso.attivo rect { stroke: var(--notte); stroke-width: 3; }
+.box-flusso.umano rect { fill: var(--hub-tinta); stroke: var(--hub); }
+.box-flusso.laterale rect { fill: var(--percorso-tinta); stroke: var(--percorso); }
+.box-flusso.laterale.cliccabile rect { fill: var(--percorso-tinta); }
+.box-flusso.ritorno rect { fill: var(--spoke-tinta); stroke: var(--spoke); stroke-dasharray: 6 4; }
+.testo-box { height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; font-weight: 700; font-size: 15.5px; line-height: 1.2; color: var(--notte); }
+.freccia { stroke: #5a6b80; stroke-width: 2.5; fill: none; }
+.freccia.laterale { stroke: var(--percorso-testo); stroke-dasharray: 5 4; }
+.freccia.ritorno { stroke: var(--spoke-testo); stroke-dasharray: 7 5; }
+.nota-freccia { font-size: 14px; fill: var(--percorso-testo); font-weight: 700; }
+.schede-modelli { align-items: stretch; }
+.scheda-modello { display: grid; gap: 8px; align-content: start; transition: box-shadow .3s, border-color .3s; }
+.scheda-modello.attivo, .attivo-bordo { border: 3px solid var(--notte); box-shadow: 0 0 0 5px var(--accento); }
+.scheda-modello h2 { margin: 0; }
+.scheda-modello dl { display: grid; grid-template-columns: 190px 1fr; gap: 6px 14px; margin: 0; font-size: 18px; }
+.scheda-modello dt { font-weight: 700; color: var(--grigio); }
+.scheda-modello dd { margin: 0; }
+.scheda-modello ul { margin: 0; padding-left: 20px; }
+.scheda-modello .non-fa { font-weight: 700; color: var(--allarme); }
+.esempio { background: var(--grigio-chiaro); border-radius: var(--r-btn); padding: 10px 14px; display: grid; gap: 4px; font-size: 18px; }
+.esempio ul { margin: 0; padding-left: 20px; }
+.grafo-bayes svg { width: 100%; height: auto; display: block; }
+.arco { fill: none; stroke: #8aa0b8; stroke-width: 2; }
+.nodo-bn { cursor: pointer; }
+.nodo-bn rect { fill: #fff; stroke: var(--bordo); stroke-width: 2; }
+.nodo-bn.osservato rect { fill: var(--hub-tinta); stroke: var(--hub); }
+.nodo-bn.rischio rect { fill: var(--accento-tinta); stroke: #c9a400; stroke-width: 3; }
+.nodo-bn.sel rect { stroke: var(--notte); stroke-width: 3.5; }
+.nodo-bn .nome { text-anchor: middle; font-weight: 700; font-size: 17px; fill: var(--notte); }
+.nodo-bn .valore { text-anchor: middle; font-size: 15px; fill: var(--grigio); font-weight: 600; }
+.nodo-bn.osservato .valore { fill: var(--hub-testo); }
+.p-rientro { font-size: 19px; }
+.p-rientro b { font-size: 26px; }
+.tabella-cpt h3 { margin: 10px 0 6px; display: flex; align-items: center; gap: 8px; }
+.cpt-scroll { max-height: 320px; overflow: auto; border: 1px solid var(--bordo); border-radius: var(--r-btn); }
+.tabella .num { text-align: right; font-variant-numeric: tabular-nums; }
+.classifica-mini { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.classifica-mini li { display: grid; grid-template-columns: 160px 1fr 50px; gap: 12px; align-items: center; font-size: 19px; }
+.classifica-mini .nome { font-weight: 700; }
+.classifica-mini b { text-align: right; font-size: 24px; }
+.lista-forte { margin: 0; padding-left: 22px; display: grid; gap: 6px; font-size: 20px; font-weight: 600; }
+.evoluzione { border: 2px dashed var(--bordo); background: transparent; box-shadow: none; }
+.evoluzione ul { margin: 0; padding-left: 22px; }

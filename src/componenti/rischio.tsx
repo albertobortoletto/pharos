@@ -7,23 +7,35 @@ import { nomeValore, percento, punti } from "../engine/spiegazioni";
 import { MODELLI, type IdModello } from "../testi/ai";
 import { G } from "../testi/glossario";
 import { Simulato } from "./comuni";
+import { useStore } from "../stato/contesto";
 
-/** Link «Come è calcolato?»: apre la scheda del modello, presa da testi/ai.ts. */
+/**
+ * Link «Come è calcolato?»: al passaggio del mouse mostra la descrizione del modello (da testi/ai.ts),
+ * al clic apre la schermata «Come ragiona il sistema» su quel modello, con «Torna indietro».
+ */
 export function ComeCalcolato({ modello }: { modello: IdModello }) {
+  const { d } = useStore();
   const [aperto, setAperto] = useState(false);
   const m = MODELLI[modello];
   return (
-    <span className="come-calcolato">
-      <button className="btn-link" onClick={() => setAperto((x) => !x)} aria-expanded={aperto}>
+    <span className="come-calcolato" onMouseEnter={() => setAperto(true)} onMouseLeave={() => setAperto(false)}>
+      <button
+        className="btn-link"
+        onClick={() => d({ t: "apri_ai", modello })}
+        onFocus={() => setAperto(true)}
+        onBlur={() => setAperto(false)}
+        data-testid={`come-calcolato-${modello}`}
+      >
         <Info size={16} style={{ verticalAlign: "-2px" }} aria-hidden="true" /> Come è calcolato?
       </button>
       {aperto && (
-        <span className="come-pop" role="note">
+        <span className="come-pop" role="tooltip">
           <b>{m.nome}</b>
           {m.aCosaServe}
           <span className="muted">
             {m.limiti[0]}. {m.nonFa}
           </span>
+          <small className="muted">Clic: apre «Come ragiona il sistema».</small>
         </span>
       )}
     </span>

@@ -1,0 +1,20 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`spiegazione di Giovanni: una sola fonte > istantanea del testo generato (cambia solo se cambiano dati o modelli) 1`] = `
+{
+  "escluse": [
+    "Legnago: posti esauriti questa settimana",
+    "Spoke X (esempio): manca un requisito per questa fase",
+  ],
+  "fattori": [
+    "Complicanza post-operatoria: no (−17 punti rispetto a «sì»)",
+    "Stadio: localizzato (−13 punti rispetto a «localmente avanzato»)",
+    "Stato funzionale (continenza): continenza parziale (+5 punti rispetto a «continenza buona»)",
+  ],
+  "proposta": [
+    "Schiavonia: 35 casi simili trattati, 22 km da casa, rischio di rientro basso (12%), 4 posti liberi questa settimana",
+    "Piove di Sacco: 6 casi simili trattati, 60 km da casa, rischio di rientro basso (13%), 1 posto libero questa settimana",
+  ],
+  "rischio": "rischio di rientro basso (12%)",
+}
+`;
