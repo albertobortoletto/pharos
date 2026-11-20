@@ -30,6 +30,7 @@ export function caricaSalvataggio(): Stato | null {
       t.controlli &&
       typeof t.controlli === "object" &&
       t.mappa &&
+      typeof t.mappa.livelli?.percorso === "boolean" &&
       typeof t.sezioneHub === "string" &&
       t.ai &&
       typeof t.ai.evidenza === "boolean" &&

@@ -10,7 +10,7 @@ Un solo file HTML, che si apre con un doppio clic e non fa chiamate di rete. La 
 
 | Vista | Per chi | Cosa mostra |
 |---|---|---|
-| **Mappa** | apertura del pitch | Le reti ospedaliera, ictus e oncologica, il percorso di Giovanni, «Perché Schiavonia?» e la previsione dei posti (catena di Markov) |
+| **Mappa** | apertura del pitch | Le reti ospedaliera, ictus e oncologica, il percorso di Renato (Agordo → Belluno → IOV), «Perché l'IOV?» e la previsione dei posti (catena di Markov) |
 | **Hub** | urologo e infermiera di percorso | I pazienti con fasi in corso, dalla lettera alle fasi, la proposta di sede, i pareri, l'elenco «da chiamare» e i motivi di rifiuto |
 | **Spoke** | fisiatra di Schiavonia | Le richieste con il timer, «Prendo in carico», le sedute, il controllo di metà percorso e i posti dichiarati |
 | **Paziente/Caregiver** | Giovanni, Laura, medico di base | SMS e foglio stampabile, l'app di Laura (timeline e «Ho un problema») e la copia in sola lettura |
