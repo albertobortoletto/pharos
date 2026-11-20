@@ -205,3 +205,50 @@
 .lista-chiamate li small { display: block; color: var(--grigio); font-size: 15px; }
 .lista-chiamate .segnalazione { background: var(--paziente-tinta); }
 .lista-chiamate .btn { padding: 8px 14px; font-size: 17px; }
+
+/* ——— Vista Paziente / Caregiver ——— */
+.interruttore { display: inline-flex; gap: 4px; padding: 4px; background: var(--grigio-chiaro); border-radius: 999px; margin-bottom: 16px; }
+.interruttore button { display: inline-flex; align-items: center; gap: 8px; border: 0; background: transparent; border-radius: 999px; padding: 8px 18px; font-weight: 700; font-size: 18px; color: var(--notte); }
+.interruttore button.attivo { background: #fff; box-shadow: var(--ombra); color: var(--paziente-testo); }
+.avviso-nuove { display: inline-flex; align-items: center; gap: 8px; background: var(--paziente); color: #1b2633; font-weight: 700; padding: 8px 16px; border-radius: 999px; }
+.app-laura { border: 3px solid var(--notte); border-radius: 28px; overflow: hidden; background: var(--grigio-chiaro); box-shadow: var(--ombra-attiva); }
+.app-barra { display: flex; align-items: center; gap: 10px; background: var(--notte); color: #fff; font-weight: 700; padding: 10px 22px; font-size: 18px; }
+.app-barra .muted { color: #b9c6d6; margin-left: auto; font-weight: 600; font-size: 15px; }
+.app-griglia { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; padding: 16px; align-items: start; }
+.app-col { display: grid; gap: 16px; }
+.app-box { background: #fff; border-radius: 18px; padding: 16px 18px; box-shadow: var(--ombra); }
+.app-box h3 { margin: 0 0 10px; font-size: 22px; display: flex; align-items: center; gap: 8px; }
+.app-box p { margin: 0 0 6px; }
+.app-data { font-size: 24px; font-weight: 700; color: var(--paziente-testo); }
+.app-luogo { display: grid; grid-template-columns: auto 1fr; gap: 0 6px; font-weight: 600; }
+.app-luogo small { grid-column: 2; color: var(--grigio); font-weight: 600; }
+.app-portare { font-size: 17px; }
+.perche-qui { margin-top: 8px; background: var(--spoke-tinta); border-radius: var(--r-btn); padding: 10px 12px; font-size: 18px; }
+.perche-qui b { display: block; color: var(--spoke-testo); }
+.riferimento small { display: block; color: var(--grigio); }
+.timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.timeline li { display: grid; grid-template-columns: 34px 1fr; gap: 10px; position: relative; padding-bottom: 16px; }
+.timeline li:not(:last-child)::before { content: ""; position: absolute; left: 13px; top: 30px; bottom: 0; width: 3px; background: var(--bordo); }
+.timeline li.tl-fatta:not(:last-child)::before { background: var(--spoke); }
+.tl-ico { color: var(--grigio); background: #fff; position: relative; }
+.tl-fatta .tl-ico { color: var(--spoke-testo); }
+.tl-in_corso .tl-ico { color: var(--paziente); }
+.timeline b { display: block; font-size: 19px; }
+.timeline small { display: block; color: var(--grigio); font-size: 16px; }
+.tl-chi { display: inline-block; margin-top: 4px; font-weight: 700; font-size: 17px; color: var(--notte); background: var(--paziente-tinta); border-radius: 999px; padding: 2px 10px; }
+.tl-fatta .tl-chi { background: var(--grigio-chiaro); font-weight: 600; }
+.tl-nota { display: block; margin-top: 4px; font-size: 16px; color: var(--grigio); }
+.motivi-app { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.motivi-app button { border: 2px solid var(--bordo); background: #fff; border-radius: var(--r-btn); padding: 10px; font-weight: 700; font-size: 17px; color: var(--notte); text-align: left; }
+.motivi-app button.scelto { border-color: var(--paziente); background: var(--paziente-tinta); }
+.problema .btn { margin: 8px 0; width: 100%; }
+.inviata { font-size: 16px; color: var(--paziente-testo); font-weight: 600; }
+.inviata.gestita { color: var(--spoke-testo); }
+.notifiche ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; max-height: 360px; overflow: auto; }
+.notifiche li { display: grid; gap: 4px; border-radius: var(--r-btn); padding: 8px 10px; background: var(--paziente-tinta); font-size: 17px; }
+.notifiche li.letta { background: var(--grigio-chiaro); color: var(--grigio); }
+.notifiche li small { color: var(--grigio); font-size: 14px; }
+.notifiche li .ok { color: var(--spoke-testo); font-weight: 700; }
+.piccolo-btn { padding: 6px 12px !important; font-size: 16px !important; justify-self: start; }
+.bolla.vuota { opacity: .7; font-style: italic; }
+.timeline li:not(.tl-attuale):not(.tl-fatta) .tl-chi { background: var(--grigio-chiaro); font-weight: 600; }
