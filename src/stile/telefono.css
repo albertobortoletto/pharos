@@ -9,9 +9,9 @@
   .main table { display: block; overflow-x: auto; }
 
   .banner { height: auto; padding: 4px 10px; font-size: 12px; text-align: center; position: static; }
-  .header { position: sticky; top: 0; height: auto; flex-wrap: wrap; gap: 6px 10px; padding: 8px var(--pad); }
+  .header { position: static; height: auto; flex-wrap: wrap; gap: 6px 10px; padding: 8px var(--pad); }
   .brand { font-size: 20px; gap: 8px; }
-  .brand small { font-size: 10px; }
+  .brand small { display: none; }
   .brand svg { width: 34px; height: 34px; }
   .azioni-header { margin-left: auto; gap: 6px; }
   .azioni-header .orologio, .azioni-header .btn-header[title="Schermo intero"], .btn-header .lungo { display: none; }
@@ -25,7 +25,6 @@
   h1, .testata h1, .mappa-titolo h1 { font-size: 24px; line-height: 1.2; }
   h2 { font-size: 19px; }
   h3 { font-size: 17px; }
-  .main p, .main li, .main label, .main span { font-size: inherit; }
   body { font-size: 16px; }
 
   .griglia, .g-7-5, .g-11-10, .g-5-7, .g-8-4, .g-6-6, .g-caso, .g-foglio,
@@ -46,4 +45,19 @@
   .finestra { width: 100%; max-width: 100%; max-height: calc(100vh - 16px); overflow-y: auto; padding: 14px; }
   .card { padding: 14px; }
   .btn, .btn-pieno { white-space: normal; }
+
+  /* Niente elementi appiccicati o fissi che coprono il contenuto */
+  .fascia-ruolo { position: static; }
+  .contatore { display: none; }
+  .main { padding-bottom: 70px; }
+  .filtri { flex-wrap: wrap; }
+  .filtri button { font-size: 15px; padding: 5px 10px; }
+  .come-pop { width: auto; max-width: calc(100vw - 40px); }
+  .sr-punti { min-width: 60px; }
+  .sr-fattori li { flex-wrap: wrap; }
+  .testata { flex-direction: column; gap: 10px; }
+  .testata .frase, .mappa-titolo p { font-size: 17px; }
+  .vista-ai .testata h1 { font-size: 24px; }
+  .hub-abilitati li { flex-wrap: wrap; }
+  .badge-scelta { margin-left: 0; }
 }
