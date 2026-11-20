@@ -1,0 +1,376 @@
+{
+  "_nota": "Stime iniziali illustrative, da far validare ai clinici e aggiornare con i dati osservati; le prior possono venire da dati epidemiologici (es. Registro Tumori del Veneto). Numeri INVENTATI.",
+  "_ordine": "Per ogni nodo gli stati vanno dal più favorevole al meno favorevole per il rischio di rientro.",
+  "nodi": {
+    "eta": {
+      "nome": "Età",
+      "stati": [
+        "<65",
+        "65-75",
+        ">75"
+      ],
+      "genitori": []
+    },
+    "comorbidita": {
+      "nome": "Comorbidità",
+      "stati": [
+        "0",
+        "1",
+        "2+"
+      ],
+      "genitori": []
+    },
+    "stadio": {
+      "nome": "Stadio",
+      "stati": [
+        "localizzato",
+        "localmente_avanzato"
+      ],
+      "genitori": []
+    },
+    "tipo_intervento": {
+      "nome": "Tipo di intervento",
+      "stati": [
+        "robotica",
+        "aperta"
+      ],
+      "genitori": []
+    },
+    "complicanza_postop": {
+      "nome": "Complicanza post-operatoria",
+      "stati": [
+        "no",
+        "si"
+      ],
+      "genitori": [
+        "eta",
+        "comorbidita",
+        "tipo_intervento"
+      ]
+    },
+    "stato_funzionale": {
+      "nome": "Stato funzionale (continenza)",
+      "stati": [
+        "buona",
+        "parziale",
+        "scarsa"
+      ],
+      "genitori": [
+        "complicanza_postop",
+        "eta"
+      ]
+    },
+    "distanza": {
+      "nome": "Distanza da casa",
+      "stati": [
+        "vicino",
+        "medio",
+        "lontano"
+      ],
+      "genitori": []
+    },
+    "accompagnatore": {
+      "nome": "Accompagnatore",
+      "stati": [
+        "si",
+        "no"
+      ],
+      "genitori": []
+    },
+    "aderenza": {
+      "nome": "Aderenza alle sedute",
+      "stati": [
+        "alta",
+        "bassa"
+      ],
+      "genitori": [
+        "distanza",
+        "accompagnatore"
+      ]
+    },
+    "rientro_hub": {
+      "nome": "Rientro all'hub",
+      "stati": [
+        "no",
+        "si"
+      ],
+      "genitori": [
+        "complicanza_postop",
+        "stato_funzionale",
+        "stadio",
+        "aderenza"
+      ]
+    }
+  },
+  "cpt": {
+    "eta": {
+      "": [
+        0.3,
+        0.45,
+        0.25
+      ]
+    },
+    "comorbidita": {
+      "": [
+        0.35,
+        0.4,
+        0.25
+      ]
+    },
+    "stadio": {
+      "": [
+        0.75,
+        0.25
+      ]
+    },
+    "tipo_intervento": {
+      "": [
+        0.7,
+        0.3
+      ]
+    },
+    "complicanza_postop": {
+      "<65|0|robotica": [
+        0.9,
+        0.1
+      ],
+      "<65|0|aperta": [
+        0.832,
+        0.168
+      ],
+      "<65|1|robotica": [
+        0.858,
+        0.142
+      ],
+      "<65|1|aperta": [
+        0.769,
+        0.231
+      ],
+      "<65|2+|robotica": [
+        0.786,
+        0.214
+      ],
+      "<65|2+|aperta": [
+        0.668,
+        0.332
+      ],
+      "65-75|0|robotica": [
+        0.87,
+        0.13
+      ],
+      "65-75|0|aperta": [
+        0.786,
+        0.214
+      ],
+      "65-75|1|robotica": [
+        0.818,
+        0.182
+      ],
+      "65-75|1|aperta": [
+        0.711,
+        0.289
+      ],
+      "65-75|2+|robotica": [
+        0.731,
+        0.269
+      ],
+      "65-75|2+|aperta": [
+        0.599,
+        0.401
+      ],
+      ">75|0|robotica": [
+        0.818,
+        0.182
+      ],
+      ">75|0|aperta": [
+        0.711,
+        0.289
+      ],
+      ">75|1|robotica": [
+        0.75,
+        0.25
+      ],
+      ">75|1|aperta": [
+        0.622,
+        0.378
+      ],
+      ">75|2+|robotica": [
+        0.646,
+        0.354
+      ],
+      ">75|2+|aperta": [
+        0.5,
+        0.5
+      ]
+    },
+    "stato_funzionale": {
+      "no|<65": [
+        0.646,
+        0.271,
+        0.083
+      ],
+      "no|65-75": [
+        0.574,
+        0.316,
+        0.11
+      ],
+      "no|>75": [
+        0.475,
+        0.371,
+        0.154
+      ],
+      "si|<65": [
+        0.354,
+        0.414,
+        0.232
+      ],
+      "si|65-75": [
+        0.289,
+        0.422,
+        0.289
+      ],
+      "si|>75": [
+        0.214,
+        0.408,
+        0.378
+      ]
+    },
+    "distanza": {
+      "": [
+        0.35,
+        0.4,
+        0.25
+      ]
+    },
+    "accompagnatore": {
+      "": [
+        0.7,
+        0.3
+      ]
+    },
+    "aderenza": {
+      "vicino|si": [
+        0.832,
+        0.168
+      ],
+      "vicino|no": [
+        0.599,
+        0.401
+      ],
+      "medio|si": [
+        0.769,
+        0.231
+      ],
+      "medio|no": [
+        0.5,
+        0.5
+      ],
+      "lontano|si": [
+        0.646,
+        0.354
+      ],
+      "lontano|no": [
+        0.354,
+        0.646
+      ]
+    },
+    "rientro_hub": {
+      "no|buona|localizzato|alta": [
+        0.943,
+        0.057
+      ],
+      "no|buona|localizzato|bassa": [
+        0.881,
+        0.119
+      ],
+      "no|buona|localmente_avanzato|alta": [
+        0.87,
+        0.13
+      ],
+      "no|buona|localmente_avanzato|bassa": [
+        0.75,
+        0.25
+      ],
+      "no|parziale|localizzato|alta": [
+        0.9,
+        0.1
+      ],
+      "no|parziale|localizzato|bassa": [
+        0.802,
+        0.198
+      ],
+      "no|parziale|localmente_avanzato|alta": [
+        0.786,
+        0.214
+      ],
+      "no|parziale|localmente_avanzato|bassa": [
+        0.622,
+        0.378
+      ],
+      "no|scarsa|localizzato|alta": [
+        0.818,
+        0.182
+      ],
+      "no|scarsa|localizzato|bassa": [
+        0.668,
+        0.332
+      ],
+      "no|scarsa|localmente_avanzato|alta": [
+        0.646,
+        0.354
+      ],
+      "no|scarsa|localmente_avanzato|bassa": [
+        0.45,
+        0.55
+      ],
+      "si|buona|localizzato|alta": [
+        0.846,
+        0.154
+      ],
+      "si|buona|localizzato|bassa": [
+        0.711,
+        0.289
+      ],
+      "si|buona|localmente_avanzato|alta": [
+        0.69,
+        0.31
+      ],
+      "si|buona|localmente_avanzato|bassa": [
+        0.5,
+        0.5
+      ],
+      "si|parziale|localizzato|alta": [
+        0.75,
+        0.25
+      ],
+      "si|parziale|localizzato|bassa": [
+        0.574,
+        0.426
+      ],
+      "si|parziale|localmente_avanzato|alta": [
+        0.55,
+        0.45
+      ],
+      "si|parziale|localmente_avanzato|bassa": [
+        0.354,
+        0.646
+      ],
+      "si|scarsa|localizzato|alta": [
+        0.599,
+        0.401
+      ],
+      "si|scarsa|localizzato|bassa": [
+        0.401,
+        0.599
+      ],
+      "si|scarsa|localmente_avanzato|alta": [
+        0.378,
+        0.622
+      ],
+      "si|scarsa|localmente_avanzato|bassa": [
+        0.214,
+        0.786
+      ]
+    }
+  }
+}
