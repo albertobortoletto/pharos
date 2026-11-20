@@ -92,7 +92,8 @@ const SCENE_COMPONENTI = [Scena1Dimissione, Scena2Sede, Scena3Passaggio, Scena4I
 function useScala() {
   const [z, setZ] = useState(1);
   useLayoutEffect(() => {
-    const f = () => setZ(Math.min(1, window.innerWidth / 1920, window.innerHeight / 1080));
+    // Sul telefono (sotto 900 px) niente scala: il layout passa a una colonna (vedi telefono.css).
+    const f = () => setZ(window.innerWidth < 900 ? 1 : Math.min(1, window.innerWidth / 1920, window.innerHeight / 1080));
     f();
     window.addEventListener("resize", f);
     return () => window.removeEventListener("resize", f);
