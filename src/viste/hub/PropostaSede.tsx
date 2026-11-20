@@ -74,8 +74,7 @@ function CartaCandidato({ c, i }: { c: Candidato; i: number }) {
         <div className="cand-dettagli">
           {c.esperienza ? (
             <span>
-              {G.simili[0].toUpperCase() + G.simili.slice(1)}: {c.esperienza.n}, senza rientro {percento(c.esperienza.senzaRientro)}
-              {c.esperienza.rapportoOE !== null && <> · osservati/attesi {c.esperienza.rapportoOE.toFixed(2).replace(".", ",")}</>}
+              Senza rientro {percento(c.esperienza.senzaRientro)} dei {G.simili}
               {c.esperienza.pochiDati && <PochiDati />}
             </span>
           ) : (

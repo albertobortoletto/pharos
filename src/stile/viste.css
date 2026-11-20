@@ -25,7 +25,6 @@
 .header { gap: 14px; }
 .nav-ruoli { gap: 2px; }
 .nav-ruoli button { padding: 8px 12px; gap: 7px; font-size: 17px; }
-.app:not(.vista-racconto) .brand small { display: none; }
 
 /* Badge sull'origine del dato: simulato, dedotto, pochi dati */
 .badge-dato {
@@ -40,7 +39,7 @@
   margin-left: 6px;
   white-space: nowrap;
 }
-.badge-dato.simulato { color: var(--accento-testo); background: var(--accento-tinta); border-color: #e9d36a; }
+.badge-dato.simulato { color: var(--accento-testo); background: var(--accento-tinta); border-color: #9fdde7; }
 .badge-dato.dedotto { color: var(--percorso-testo); background: var(--percorso-tinta); border-color: var(--percorso); border-style: dashed; }
 .badge-dato.pochi { color: var(--allarme); background: var(--allarme-tinta); border-color: #e8b4ae; }
 
@@ -156,10 +155,10 @@
 .stato-proposta .timer { margin-left: 6px; }
 .legenda-voci { display: flex; gap: 16px; flex-wrap: wrap; font-size: 16px; color: var(--grigio); font-weight: 600; }
 .pallino-voce { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: 0; }
-.voce-rischio { background: #4474b4; }
-.voce-esperienza { background: #74b45c; }
-.voce-vicinanza { background: #e47c40; }
-.voce-rapidita { background: #98ccd4; }
+.voce-rischio { background: var(--hub); }
+.voce-esperienza { background: var(--spoke); }
+.voce-vicinanza { background: var(--paziente); }
+.voce-rapidita { background: var(--percorso); }
 .candidati { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
 .candidato { display: flex; gap: 14px; background: #fff; border: 1px solid var(--bordo); border-radius: var(--r-card); padding: 14px 18px; box-shadow: var(--ombra); }
 .candidato.primo { border: 2px solid var(--hub); }
@@ -266,10 +265,10 @@
 .link-ictus { stroke: #7a5cb0; opacity: .75; }
 .link-onco { stroke: #c9a400; }
 .link-onco.pilota { stroke: #e0a100; stroke-linecap: round; }
-.tratta-oggi { stroke: #4474b4; stroke-linecap: round; }
-.tratta-proposta { stroke: #356b24; stroke-linecap: round; }
+.tratta-oggi { stroke: var(--hub); stroke-linecap: round; }
+.tratta-proposta { stroke: var(--spoke-testo); stroke-linecap: round; }
 .etichetta-tratta { fill: #3a66a3; font-weight: 700; paint-order: stroke; stroke: #fff; stroke-width: 4px; text-anchor: middle; }
-.etichetta-tratta.proposta { fill: #356b24; }
+.etichetta-tratta.proposta { fill: var(--spoke-testo); }
 .casa { fill: var(--paziente); stroke: #fff; stroke-width: 2.5px; }
 .nodo { cursor: pointer; transition: opacity .3s; }
 .nodo.spento { opacity: .3; }
@@ -317,8 +316,8 @@
 .legenda-mappa .spunta { font-size: 17px; margin: 2px 0; }
 .legenda-simboli { display: grid; gap: 4px; margin-top: 8px; font-size: 15px; color: var(--grigio); }
 .sim { display: inline-block; width: 14px; height: 14px; border-radius: 50%; vertical-align: -2px; margin-right: 4px; border: 2px solid #fff; box-shadow: 0 0 0 1px var(--bordo); }
-.sim.hub-eu { background: #4474b4; width: 18px; height: 18px; vertical-align: -4px; }
-.sim.hub-prov { background: #4474b4; }
+.sim.hub-eu { background: var(--hub); width: 18px; height: 18px; vertical-align: -4px; }
+.sim.hub-prov { background: var(--hub); }
 .sim.altro { background: #8aa0b8; width: 11px; height: 11px; }
 .sim.linea-ictus { width: 22px; height: 0; border-radius: 0; border: 0; border-top: 3px dashed #7a5cb0; box-shadow: none; vertical-align: 3px; }
 .velo { position: fixed; inset: 0; z-index: 50; background: #1b263380; display: grid; place-items: center; padding: 40px; animation: entra .25s var(--ease); }
@@ -330,7 +329,7 @@
 .flusso { width: 100%; height: auto; display: block; }
 .box-flusso rect { fill: #fff; stroke: var(--bordo); stroke-width: 2; }
 .box-flusso.cliccabile { cursor: pointer; }
-.box-flusso.cliccabile rect { fill: var(--accento-tinta); stroke: #e9d36a; }
+.box-flusso.cliccabile rect { fill: var(--accento-tinta); stroke: #9fdde7; }
 .box-flusso.cliccabile:hover rect, .box-flusso.attivo rect { stroke: var(--notte); stroke-width: 3; }
 .box-flusso.umano rect { fill: var(--hub-tinta); stroke: var(--hub); }
 .box-flusso.laterale rect { fill: var(--percorso-tinta); stroke: var(--percorso); }
@@ -357,7 +356,7 @@
 .nodo-bn { cursor: pointer; }
 .nodo-bn rect { fill: #fff; stroke: var(--bordo); stroke-width: 2; }
 .nodo-bn.osservato rect { fill: var(--hub-tinta); stroke: var(--hub); }
-.nodo-bn.rischio rect { fill: var(--accento-tinta); stroke: #c9a400; stroke-width: 3; }
+.nodo-bn.rischio rect { fill: var(--accento-tinta); stroke: var(--accento-testo); stroke-width: 3; }
 .nodo-bn.sel rect { stroke: var(--notte); stroke-width: 3.5; }
 .nodo-bn .nome { text-anchor: middle; font-weight: 700; font-size: 17px; fill: var(--notte); }
 .nodo-bn .valore { text-anchor: middle; font-size: 15px; fill: var(--grigio); font-weight: 600; }

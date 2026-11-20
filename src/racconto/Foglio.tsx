@@ -84,7 +84,7 @@ export function Foglio() {
       </div>
       <div className="piede">
         <span>Copia al medico di base: {GIOVANNI.medico_di_base.replace(" (medico di base)", "")}</span>
-        <span>HubSpoke Medical Journey</span>
+        <span>Pharos · percorsi di cura connessi</span>
       </div>
     </article>
   );

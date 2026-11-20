@@ -129,7 +129,6 @@ function HoUnProblema() {
       >
         Invia a {INFERMIERA.nome}
       </button>
-      <p className="muted piccolo">La sede si sceglie all'inizio di ogni fase. Per cambiarla, parlatene con {INFERMIERA.nome}.</p>
       {mie.map((x) => (
         <p key={x.id} className={`inviata ${x.gestita ? "gestita" : ""}`}>
           <Check size={16} aria-hidden="true" /> «{PROBLEMI_CAREGIVER.find((m) => m.id === x.motivo)?.testo}» inviato {etichettaOraBreve(x.ora)}
@@ -248,9 +247,8 @@ function MedicoDiBase() {
         <h2>
           <Stethoscope size={22} aria-hidden="true" /> {GIOVANNI.medico_di_base}
         </h2>
-        <p>Vede le fasi, chi segue il paziente e i prossimi appuntamenti. Riceve copia del promemoria.</p>
         <p className="muted">
-          Non avvia nulla e non cambia sedi. Per dubbi: {INFERMIERA.nome}, {INFERMIERA.telefono}.
+          Sola lettura, con copia del promemoria. Per dubbi: {INFERMIERA.nome}, {INFERMIERA.telefono}.
         </p>
       </div>
     </div>
@@ -271,7 +269,7 @@ export default function VistaPaziente() {
       <Testata
         chi="Paziente e caregiver"
         titolo="Il percorso visto da casa"
-        frase="Chi vi segue adesso, il prossimo appuntamento, chi chiamare. Niente rischi, niente punteggi."
+        frase="Chi vi segue, il prossimo appuntamento, chi chiamare."
         destra={
           nuove > 0 ? (
             <span className="avviso-nuove">

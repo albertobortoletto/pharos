@@ -51,27 +51,27 @@
   --font-ui: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-print: "Cifre Foglio", "Atkinson Hyperlegible", "Inter", system-ui,
     sans-serif;
-  --hub: #4474b4;
-  --notte: #28486c;
-  --accento: #f8e05c;
-  --paziente: #e47c40;
-  --spoke: #74b45c;
-  --percorso: #98ccd4;
+  --hub: #1f5fae;
+  --notte: #0b2545;
+  --accento: #5bd0e0;
+  --paziente: #d0703c;
+  --spoke: #12898c;
+  --percorso: #6aaee0;
   --allarme: #b3261e;
   --bianco: #fff;
-  --grigio-chiaro: #f2f5f9;
-  --grigio: #5a6b80;
-  --bordo: #d5dde8;
-  --hub-testo: #3a66a3;
-  --spoke-testo: #356b24;
-  --paziente-testo: #a84a14;
-  --percorso-testo: #1f6470;
-  --accento-testo: #6e5b00;
-  --hub-tinta: #e3ebf6;
-  --spoke-tinta: #e8f3e3;
-  --paziente-tinta: #fbe9dd;
-  --percorso-tinta: #e4f2f4;
-  --accento-tinta: #fdf6cc;
+  --grigio-chiaro: #f4f7fb;
+  --grigio: #52637a;
+  --bordo: #d8e1ec;
+  --hub-testo: #174a8b;
+  --spoke-testo: #0b6466;
+  --paziente-testo: #9a4416;
+  --percorso-testo: #1b5c8c;
+  --accento-testo: #0a5866;
+  --hub-tinta: #e8f0fa;
+  --spoke-tinta: #e3f3f3;
+  --paziente-tinta: #fbede4;
+  --percorso-tinta: #e7f2fb;
+  --accento-tinta: #e4f6f9;
   --allarme-tinta: #fbe6e4;
   --ruolo: var(--hub);
   --ruolo-tinta: var(--hub-tinta);
@@ -88,8 +88,8 @@
   --r-badge: 8px;
   --r-btn: 12px;
   --r-card: 16px;
-  --ombra: 0 2px 8px rgba(40, 72, 108, 0.1);
-  --ombra-attiva: 0 8px 24px rgba(40, 72, 108, 0.18);
+  --ombra: 0 2px 8px rgba(11, 37, 69, 0.08);
+  --ombra-attiva: 0 8px 24px rgba(11, 37, 69, 0.16);
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --h-banner: 36px;
   --h-header: 76px;
@@ -176,10 +176,11 @@ button:disabled {
   top: 0;
   z-index: 30;
   height: var(--h-banner);
-  background: var(--accento);
-  color: var(--notte);
-  font-weight: 700;
-  font-size: var(--t-piccolo);
+  background: var(--grigio-chiaro);
+  color: var(--hub-testo);
+  border-bottom: 1px solid var(--bordo);
+  font-weight: 600;
+  font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -203,18 +204,21 @@ button:disabled {
   align-items: center;
   gap: 12px;
   font-weight: 700;
-  font-size: 22px;
+  font-size: 26px;
+  letter-spacing: 0.01em;
   white-space: nowrap;
 }
 .brand small {
   display: block;
   font-weight: 600;
-  font-size: 18px;
-  color: #c9d6e6;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accento);
 }
 .brand-logo {
-  width: 40px;
-  height: 40px;
+  width: 46px;
+  height: 46px;
   flex: none;
 }
 .nav {
@@ -252,13 +256,51 @@ button:disabled {
   font-size: 16px;
 }
 .nav button.attiva {
-  background: var(--accento);
+  background: #fff;
   color: var(--notte);
 }
 .nav button.visitata:not(.attiva) .n {
   background: var(--spoke);
   border-color: var(--spoke);
   color: var(--notte);
+}
+.menu-extra {
+  position: relative;
+  margin-left: 10px;
+  padding-left: 14px;
+  border-left: 1px solid #ffffff33;
+}
+.menu-extra > button {
+  font-weight: 600;
+  color: #b9c9de;
+}
+.menu-extra-elenco {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 300px;
+  background: #fff;
+  border: 1px solid var(--bordo);
+  border-radius: var(--r-card);
+  box-shadow: var(--ombra-attiva);
+  padding: 6px;
+  display: grid;
+  gap: 2px;
+  z-index: 40;
+}
+.nav .menu-extra-elenco button {
+  color: var(--notte);
+  border-radius: var(--r-btn);
+  justify-content: flex-start;
+  font-weight: 600;
+  padding: 10px 14px;
+}
+.nav .menu-extra-elenco button:hover {
+  background: var(--grigio-chiaro);
+}
+.nav .menu-extra-elenco button.attiva {
+  background: var(--hub-tinta);
+  color: var(--hub-testo);
 }
 .azioni-header {
   display: flex;
@@ -308,7 +350,7 @@ button:disabled {
   bottom: 0;
   z-index: 30;
   height: 8px;
-  background: #28486c4d;
+  background: #0b25454d;
   display: flex;
   gap: 3px;
 }
@@ -523,7 +565,7 @@ button:disabled {
   font-weight: 700;
   color: var(--accento-testo);
   background: var(--accento-tinta);
-  border: 1px solid #e9d36a;
+  border: 1px solid #9fdde7;
   padding: 0 8px;
   border-radius: 999px;
   vertical-align: middle;
@@ -680,11 +722,11 @@ button:disabled {
   margin: 0 0 8px;
 }
 .lettera mark {
-  background: #fbf1b4;
+  background: #d4f1f6;
   color: inherit;
   border-radius: 4px;
   padding: 1px 2px;
-  box-shadow: inset 0 -3px #ecd34f;
+  box-shadow: inset 0 -3px #5bd0e0;
   transition:
     background 0.25s,
     box-shadow 0.25s;
@@ -1192,7 +1234,7 @@ button:disabled {
   font-family: Georgia, serif;
   font-size: 18px;
   color: #3b4b5d;
-  background: #fbf1b4;
+  background: #d4f1f6;
   border-radius: 6px;
   padding: 2px 8px;
   quotes: "«" "»";
@@ -1362,7 +1404,7 @@ button:disabled {
 .stato.ripian {
   background: var(--accento-tinta);
   color: var(--accento-testo);
-  border-color: #e9d36a;
+  border-color: #9fdde7;
 }
 .pannello-chiamata {
   grid-column: 1 / -1;
