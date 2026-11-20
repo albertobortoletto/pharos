@@ -1,7 +1,7 @@
 // Vista PAZIENTE / CAREGIVER: Laura (app), Giovanni (SMS e foglio), medico di base (sola lettura).
 // Qui non compaiono mai il rischio di rientro, la rete bayesiana o dati clinici.
 import { useState } from "react";
-import { Bell, BellRing, Check, CheckCircle2, Circle, CircleDot, Eye, MapPin, MessageSquareText, Phone, PhoneCall, Smartphone, Stethoscope, UserRound } from "lucide-react";
+import { Bell, BellRing, Check, CheckCircle2, Circle, CircleDot, Eye, MapPin, MessageSquareText, Phone, PhoneCall, Printer, Smartphone, Stethoscope, UserRound } from "lucide-react";
 import { GIOVANNI, INFERMIERA } from "../../data/persone";
 import { PROBLEMI_CAREGIVER } from "../../data/motivi";
 import { strutturaPerId } from "../../data/strutture";
@@ -222,6 +222,9 @@ function SmsGiovanni() {
         <p style={{ fontWeight: 600, margin: "16px 0" }}>
           <PhoneCall size={20} style={{ verticalAlign: "-3px" }} aria-hidden="true" /> Giovanni non usa app: ha il foglio, gli SMS e il numero di {INFERMIERA.nome}.
         </p>
+        <button className="btn btn-pieno paziente" onClick={() => window.print()} data-testid="stampa-paziente">
+          <Printer size={22} aria-hidden="true" /> Stampa il promemoria
+        </button>
       </div>
     </div>
   );

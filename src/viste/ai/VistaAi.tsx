@@ -86,13 +86,9 @@ function Flusso() {
 function SchedaModello({ id, esempio }: { id: IdModello; esempio: ReactNode }) {
   const { st } = useStore();
   const m = MODELLI[id];
-  const rif = useRef<HTMLElement>(null);
   const attivo = st.ai.modello === id;
-  useEffect(() => {
-    if (attivo) rif.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, [attivo]);
   return (
-    <article ref={rif} className={`card scheda-modello ${attivo ? "attivo" : ""}`} data-testid={`modello-${id}`}>
+    <article className={`card scheda-modello ${attivo ? "attivo" : ""}`} data-testid={`modello-${id}`}>
       <h2>{m.nome}</h2>
       <dl>
         <dt>{T.aCosaServe}</dt>
@@ -138,6 +134,14 @@ export default function VistaAi() {
   const r = rischioPerStruttura(GIOVANNI.profilo, GIOVANNI.comune, struttura);
   const esp = esperienzaPerStruttura(GIOVANNI.profilo);
   const ritorno = st.ai.ritorno;
+  const grafo = useRef<HTMLDivElement>(null);
+  // Da «Come è calcolato?»: si scorre al modello. Per la rete bayesiana, al grafo con l'evidenza di Giovanni.
+  useEffect(() => {
+    const id = st.ai.modello;
+    if (!id) return;
+    const el = id === "bayes" ? grafo.current : document.querySelector(`[data-testid="modello-${id}"]`);
+    el?.scrollIntoView({ block: "start" });
+  }, [st.ai.modello]);
 
   return (
     <section className="scena vista-ruolo vista-ai" data-vista="ai">
@@ -209,7 +213,7 @@ export default function VistaAi() {
         />
       </div>
 
-      <div className={`card ${st.ai.modello === "bayes" ? "attivo-bordo" : ""}`}>
+      <div ref={grafo} className={`card ${st.ai.modello === "bayes" ? "attivo-bordo" : ""}`}>
         <h2>La rete bayesiana, disegnata dalla stessa struttura dati del calcolo</h2>
         <GrafoBayes struttura={struttura} />
       </div>

@@ -330,7 +330,10 @@ function PostiDichiarati() {
 export default function VistaSpoke() {
   const { st } = useStore();
   const mie = st.schede.filter((s) => s.struttura === SPOKE);
-  const richieste = mie.filter((s) => s.stato === "INVIATA").sort((a, b) => (a.scadenza ?? 0) - (b.scadenza ?? 0));
+  // Giovanni (il paziente della demo) in cima, poi per scadenza: la richiesta appena arrivata dall'hub si vede subito.
+  const richieste = mie
+    .filter((s) => s.stato === "INVIATA")
+    .sort((a, b) => Number(b.id === ID_SCHEDA_GIOVANNI) - Number(a.id === ID_SCHEDA_GIOVANNI) || (a.scadenza ?? 0) - (b.scadenza ?? 0));
   const inCarico = mie.filter((s) => IN_CARICO.includes(s.stato)).sort((a, b) => Number(b.id === ID_SCHEDA_GIOVANNI) - Number(a.id === ID_SCHEDA_GIOVANNI));
   return (
     <section className="scena vista-ruolo" data-vista="spoke">
