@@ -1,5 +1,5 @@
 import { Component, useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { BookOpen, BrainCircuit, Building2, ChevronDown, ChevronLeft, ChevronRight, Clock, Database, Hospital, Map as MapIcon, Maximize, RotateCcw, Smartphone } from "lucide-react";
+import { BookOpen, BrainCircuit, Building2, ChevronDown, ChevronLeft, ChevronRight, Clock, Database, Hospital, Map as MapIcon, Maximize, RotateCcw, Route, Smartphone } from "lucide-react";
 import { ESTRAZIONE, LETTERA } from "./data/lettera";
 import { fraseNellaLettera } from "./engine/frasi";
 import { etichettaOra, etichettaOraBreve } from "./engine/orologio";
@@ -20,6 +20,7 @@ import VistaHub from "./viste/hub/VistaHub";
 import VistaSpoke from "./viste/spoke/VistaSpoke";
 import VistaPaziente from "./viste/paziente/VistaPaziente";
 import VistaAi from "./viste/ai/VistaAi";
+import VistaCaso from "./viste/caso/VistaCaso";
 
 const COLORI_RUOLO = {
   hub: ["var(--hub)", "var(--hub-tinta)", "var(--hub-testo)"],
@@ -34,6 +35,7 @@ const VISTE: { id: Vista; nome: string; ruolo: keyof typeof COLORI_RUOLO; ico: R
   { id: "hub", nome: "Hub", ruolo: "hub", ico: <Hospital size={20} aria-hidden="true" /> },
   { id: "spoke", nome: "Spoke", ruolo: "spoke", ico: <Building2 size={20} aria-hidden="true" /> },
   { id: "paziente", nome: "Paziente/Caregiver", ruolo: "paziente", ico: <Smartphone size={20} aria-hidden="true" /> },
+  { id: "caso", nome: "Caso: Renato", ruolo: "percorso", ico: <Route size={20} aria-hidden="true" /> },
   // Approfondimenti: fuori dal percorso principale della demo, nel menu a tendina.
   { id: "ai", nome: "Come ragiona il sistema", ruolo: "ai", ico: <BrainCircuit size={20} aria-hidden="true" />, extra: true },
   { id: "racconto", nome: "Racconto (6 scene)", ruolo: "hub", ico: <BookOpen size={20} aria-hidden="true" />, extra: true },
@@ -233,6 +235,7 @@ function Demo() {
             {st.vista === "hub" && <VistaHub />}
             {st.vista === "spoke" && <VistaSpoke />}
             {st.vista === "paziente" && <VistaPaziente />}
+            {st.vista === "caso" && <VistaCaso />}
             {st.vista === "ai" && <VistaAi />}
           </main>
           <div className="solo-stampa">

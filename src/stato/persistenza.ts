@@ -33,6 +33,8 @@ export function caricaSalvataggio(): Stato | null {
       typeof t.sezioneHub === "string" &&
       t.ai &&
       typeof t.ai.evidenza === "boolean" &&
+      t.caso &&
+      typeof t.caso.passo === "number" &&
       t.pesi &&
       Array.isArray(t.notifiche) &&
       Array.isArray(t.pareri);

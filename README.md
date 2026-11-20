@@ -14,10 +14,11 @@ Un solo file HTML, che si apre con un doppio clic e non fa chiamate di rete. La 
 | **Hub** | urologo e infermiera di percorso | I pazienti con fasi in corso, dalla lettera alle fasi, la proposta di sede, i pareri, l'elenco «da chiamare» e i motivi di rifiuto |
 | **Spoke** | fisiatra di Schiavonia | Le richieste con il timer, «Prendo in carico», le sedute, il controllo di metà percorso e i posti dichiarati |
 | **Paziente/Caregiver** | Giovanni, Laura, medico di base | SMS e foglio stampabile, l'app di Laura (timeline e «Ho un problema») e la copia in sola lettura |
+| **Caso: Renato** | caso di studio | Microcitoma polmonare: dal pronto soccorso di Belluno (spoke) alla seconda linea con un farmaco «solo hub» all'IOV, giorno 1 e giorno 8 pianificati evitando i festivi |
 | **Come ragiona il sistema** (menu *Approfondimenti*) | giuria e clinici | Il flusso, le quattro schede dei modelli, il grafo della rete bayesiana, i pesi e cosa il sistema non fa mai |
 | **Racconto** (menu *Approfondimenti*) | — | Le 6 scene della demo originale |
 
-La demo si fa con le prime quattro viste. «Come ragiona il sistema» e il «Racconto» stanno nel menu **Approfondimenti**, da aprire dopo; i link «Come è calcolato?» portano comunque alla spiegazione del modello.
+La demo si fa con le prime quattro viste; il **caso di Renato** mostra lo stesso modello su un percorso oncologico. «Come ragiona il sistema» e il «Racconto» stanno nel menu **Approfondimenti**, da aprire dopo; i link «Come è calcolato?» portano comunque alla spiegazione del modello.
 
 Tutte le viste leggono lo **stesso store**: un'azione in una vista si vede subito nelle altre. Il tasto **+1 g** fa avanzare il tempo simulato. **Ricomincia demo** riporta tutto allo stato iniziale.
 
@@ -75,6 +76,7 @@ Ogni numero e ogni frase ha **una sola fonte**. Le viste non scrivono numeri a m
 | Distanze, tempi e numero di sedute | `src/data/tratte.ts` |
 | Pazienti, persone, lettera di dimissione, itinerario | `src/data/persone.ts`, `pazienti.ts`, `schede.ts`, `lettera.ts`, `itinerario.ts` |
 | Motivi di rifiuto, condizioni di rientro, problemi del caregiver | `src/data/motivi.ts` |
+| Caso di Renato: persona, date, hub abilitati, date libere dell'hub, festivi | `src/data/casoRenato.ts` |
 | Nodi e collegamenti delle reti, confini | `src/data/rete/` |
 | Probabilità della rete bayesiana | `src/data/bn_cpt.json` (rigenerate da `strumenti/genera_cpt.mjs`) |
 | Parametri del dataset sintetico | `src/data/sintetico.ts` |
