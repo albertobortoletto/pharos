@@ -8,10 +8,10 @@ export const PASSI_MAPPA = [
   { n: 1, bottone: "Rete ospedaliera", titolo: "La rete sulla carta esiste già." },
   { n: 2, bottone: "Rete ictus", titolo: "Hub e spoke dipendono dalla rete." },
   { n: 3, bottone: "Rete oncologica", titolo: "Per la prostata, i collegamenti per singola fase non sono scritti da nessuna parte." },
-  { n: 4, bottone: "Segui Giovanni", titolo: "Mancano le linee che collegano i passaggi di ogni singolo paziente." },
-  { n: 5, bottone: "Perché Schiavonia?", titolo: "Il sistema propone e spiega, il medico decide." },
+  { n: 4, bottone: "Segui Renato", titolo: "Mancano le linee che collegano i passaggi di ogni singolo paziente." },
+  { n: 5, bottone: "Perché l'IOV?", titolo: "Il sistema propone e spiega, il medico decide." },
   { n: 6, bottone: "Previsione: oggi → +3 mesi", titolo: "Dove mancheranno posti, prima che manchino." },
-  { n: 7, bottone: "Vai alla vista Hub", titolo: "Dalla rete al paziente." },
+  { n: 7, bottone: "Apri il caso di Renato", titolo: "Dalla rete al paziente." },
 ] as const;
 
 export const ETICHETTA_BELLUNO = "Hub nella rete ospedaliera, spoke nella rete ictus";
@@ -22,7 +22,7 @@ export const NOMI_LIVELLI = {
   ospedaliera: "Rete ospedaliera (DGR 614/2019)",
   ictus: "Rete ictus (DGR 4198/2008)",
   onco: "Rete oncologica (ROV)",
-  giovanni: "Percorso di Giovanni",
+  percorso: "Percorso di Renato",
   previsione: "Previsione (catena di Markov)",
 } as const;
 

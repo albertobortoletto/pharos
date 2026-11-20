@@ -2,15 +2,14 @@
 import { useEffect, useMemo, useRef, useState, type MouseEvent as ME } from "react";
 import { geoMercator, geoPath } from "d3-geo";
 import type { Feature, FeatureCollection, Geometry } from "geojson";
-import { ArrowRight, Home, Layers, RotateCcw, X } from "lucide-react";
+import { ArrowRight, Home, Hospital, Layers, RotateCcw, X } from "lucide-react";
 import confini from "../../data/rete/veneto.geo.json";
-import { CASA_GIOVANNI, LINK_ONCO, MACRO_ICTUS, NODI, POLI_ROV_DA_COMPLETARE, nodoPerId, type NodoRete } from "../../data/rete/nodi";
-import { GIOVANNI } from "../../data/persone";
+import { LINK_ONCO, MACRO_ICTUS, NODI, POLI_ROV_DA_COMPLETARE, nodoPerId, type NodoRete } from "../../data/rete/nodi";
 import { strutturaPerId } from "../../data/strutture";
-import { SEDUTE_RIABILITAZIONE } from "../../data/tratte";
+import { CASA_RENATO, FESTIVI, HUB_CASO, RENATO, SECONDA_LINEA, SLOT_HUB, SPOKE_CASO, TRATTE_RENATO } from "../../data/casoRenato";
 import { OGGI_DEMO } from "../../data/itinerario";
-import { aggiungiMesi, nomeMese } from "../../engine/date";
-import { contoViaggio, kmRisparmiatiAViaggio } from "../../engine/viaggio";
+import { aggiungiMesi, dataBreve, dataLunga, nomeMese } from "../../engine/date";
+import { pianificaCiclo } from "../../engine/infusioni";
 import { livelloSaturazione, MESI_PREVISIONE, POSTI_MESE_HUB, postiMese, probSuperamento, SOGLIE_COLORE, type LivelloSaturazione } from "../../engine/markov";
 import { percento } from "../../engine/spiegazioni";
 import { useStore } from "../../stato/contesto";
@@ -31,8 +30,7 @@ import {
 } from "../../testi/mappa";
 import { G } from "../../testi/glossario";
 import { Dedotto, Simulato, Stima } from "../../componenti/comuni";
-import { ComeCalcolato, SchedaRischio } from "../../componenti/rischio";
-import { ElencoStrutture, useAbbinamentoGiovanni } from "../hub/PropostaSede";
+import { ComeCalcolato } from "../../componenti/rischio";
 
 const W = 1060;
 const H = 820;
@@ -49,15 +47,23 @@ const proiezione = geoMercator().fitExtent(
 const percorsoGeo = geoPath(proiezione);
 const xy = (lng: number, lat: number) => proiezione([lng, lat]) as [number, number];
 
-/** Zoom «Segui Giovanni»: casa, hub e spoke del pilota. */
+/** Zoom «Segui Renato»: casa, spoke di Belluno e hub oncologico. */
 const ZOOM = (() => {
-  const punti = [xy(CASA_GIOVANNI.lng, CASA_GIOVANNI.lat), xy(nodoPerId("PD").lng, nodoPerId("PD").lat), xy(nodoPerId("SC").lng, nodoPerId("SC").lat)];
+  const punti = [CASA_RENATO, nodoPerId(SPOKE_CASO.nodo), nodoPerId(HUB_CASO.nodo)].map((p) => xy(p.lng, p.lat));
   const xs = punti.map((p) => p[0]);
   const ys = punti.map((p) => p[1]);
   const [x0, x1, y0, y1] = [Math.min(...xs) - 90, Math.max(...xs) + 90, Math.min(...ys) - 110, Math.max(...ys) + 110];
   const k = Math.min(W / (x1 - x0), H / (y1 - y0), 3.4);
   return { k, tx: W / 2 - k * ((x0 + x1) / 2), ty: H / 2 - k * ((y0 + y1) / 2) };
 })();
+
+/** Le stesse date della vista «Caso: Renato»: giorno 1 e giorno 8 all'hub, festivi esclusi. */
+const PIANO_RENATO = pianificaCiclo(
+  SLOT_HUB,
+  SECONDA_LINEA.giorniHub.map((g) => g.giorno),
+  FESTIVI,
+);
+const oreMin = (m: number) => (m < 60 ? `~${m} min` : `~${Math.floor(m / 60)} h${m % 60 ? ` ${m % 60} min` : ""}`);
 
 /** Interpolazione 0→1 animata (requestAnimationFrame), per uno zoom fluido con etichette leggibili. */
 function useTween(acceso: boolean, durata = 950) {
@@ -102,7 +108,6 @@ export default function VistaMappa() {
   const ty = ZOOM.ty * t;
   const [hover, setHover] = useState<{ n: NodoRete; x: number; y: number } | null>(null);
   const contenitore = useRef<HTMLDivElement>(null);
-  const abb = useAbbinamentoGiovanni();
 
   const patch = (p: Partial<typeof m>) => d({ t: "mappa", patch: p });
   const livello = (l: keyof LivelliMappa, v: boolean) => patch({ livelli: { ...L, [l]: v } });
@@ -111,13 +116,14 @@ export default function VistaMappa() {
   const azioni = {
     ictus: () => patch({ livelli: { ...L, ictus: true }, passo: passo(2), lampeggio: m.lampeggio + 1 }),
     onco: () => patch({ livelli: { ...L, onco: true }, passo: passo(3) }),
-    giovanni: () => patch({ livelli: { ...L, giovanni: true }, zoom: true, passo: passo(4) }),
+    percorso: () => patch({ livelli: { ...L, percorso: true }, zoom: true, passo: passo(4) }),
     perche: () => patch({ spiegazione: true, passo: passo(5) }),
-    mesi: (x: number) => patch({ livelli: { ...L, previsione: true }, mesi: x, passo: passo(6) }),
-    hub: () => {
-      // Dal riquadro «Perché Schiavonia?» (passo 5) si chiude il riquadro e il passo 6 resta da fare al ritorno.
+    // La previsione riguarda tutta la rete: si torna alla vista intera del Veneto.
+    mesi: (x: number) => patch({ livelli: { ...L, previsione: true }, mesi: x, zoom: false, passo: passo(6) }),
+    caso: () => {
+      // Dal riquadro «Perché l'IOV?» (passo 5) si chiude il riquadro e il passo 6 resta da fare al ritorno.
       patch({ spiegazione: false, passo: m.spiegazione ? m.passo : 7 });
-      d({ t: "vista", vista: "hub", paziente: "giovanni", sezione: "proposta" });
+      d({ t: "vista", vista: "caso" });
     },
   };
 
@@ -133,7 +139,6 @@ export default function VistaMappa() {
   }, [st.posti, m.mesi]);
   const meseNome = nomeMese(aggiungiMesi(OGGI_DEMO, m.mesi));
   const satSC = previsione.SC ?? 0;
-  const conto = contoViaggio(GIOVANNI.comune, SEDUTE_RIABILITAZIONE);
 
   const s = (v: number) => v / k; // dimensioni costanti a schermo dentro il gruppo zoomato
   const pos = (n: { lng: number; lat: number }) => xy(n.lng, n.lat);
@@ -146,8 +151,8 @@ export default function VistaMappa() {
 
   const linkIctus = L.ictus ? NODI.filter((n) => n.ictus === "spoke").map((n) => ({ da: n, a: nodoPerId(MACRO_ICTUS[n.ulss]) })) : [];
   const etichetteSempre = new Set(["PD", "VR", "TV", "ME", "VI", "RO", "BL"]);
-  if (L.giovanni || L.previsione || m.zoom) ["SC", "PS", "LE"].forEach((x) => etichetteSempre.add(x));
-  if (L.onco && !m.zoom) etichetteSempre.add("IOV");
+  if (L.previsione) ["SC", "PS", "LE"].forEach((x) => etichetteSempre.add(x));
+  if ((L.onco && !m.zoom) || L.percorso) etichetteSempre.add("IOV");
   const titolo = PASSI_MAPPA[Math.min(m.passo, PASSI_MAPPA.length) - 1].titolo;
   const nodoSel = m.nodo ? nodoPerId(m.nodo) : null;
 
@@ -190,26 +195,30 @@ export default function VistaMappa() {
                     return <line key={`o-${l.da}-${l.a}`} x1={x1} y1={y1} x2={x2} y2={y2} className={`link-onco ${l.pilota ? "pilota" : ""}`} style={{ strokeWidth: s(l.pilota ? 6 : 2.5), opacity: m.zoom ? 0.3 : undefined }} />;
                   })}
 
-                {L.giovanni &&
+                {L.percorso &&
                   (() => {
-                    const [hx, hy] = pos(CASA_GIOVANNI);
-                    const [px, py] = pos(nodoPerId("PD"));
-                    const [sx, sy] = pos(nodoPerId("SC"));
+                    const [hx, hy] = pos(CASA_RENATO);
+                    const [bx, by] = pos(nodoPerId(SPOKE_CASO.nodo));
+                    const [ix, iy] = pos(nodoPerId(HUB_CASO.nodo));
                     return (
-                      <g className="percorso-giovanni" data-testid="percorso-giovanni">
-                        <line x1={hx} y1={hy} x2={px} y2={py} className="tratta-oggi" style={{ strokeWidth: s(4), strokeDasharray: `${s(10)} ${s(8)}` }} />
-                        <line x1={hx} y1={hy} x2={sx} y2={sy} className="tratta-proposta" style={{ strokeWidth: s(6) }} />
-                        <text x={(hx + px) / 2} y={(hy + py) / 2 - s(12)} className="etichetta-tratta" style={{ fontSize: s(17) }}>
-                          oggi: ~{conto.tuttoHub.km / conto.tuttoHub.viaggi} km a viaggio
+                      <g className="percorso-renato" data-testid="percorso-renato">
+                        <line x1={bx} y1={by} x2={ix} y2={iy} className="tratta-oggi" style={{ strokeWidth: s(3.5), strokeDasharray: `${s(10)} ${s(8)}` }} />
+                        <line x1={hx} y1={hy} x2={ix} y2={iy} className="tratta-hub" style={{ strokeWidth: s(6) }} />
+                        <line x1={hx} y1={hy} x2={bx} y2={by} className="tratta-proposta" style={{ strokeWidth: s(6) }} />
+                        <text x={(hx + bx) / 2 + s(14)} y={(hy + by) / 2} className="etichetta-tratta proposta" style={{ fontSize: s(17), textAnchor: "start" }}>
+                          prima linea: {TRATTE_RENATO.spoke.km} km
                         </text>
-                        <text x={(hx + sx) / 2} y={(hy + sy) / 2 + s(34)} className="etichetta-tratta proposta" style={{ fontSize: s(17) }}>
-                          proposta: ~{conto.misto.km / conto.misto.viaggi} km
+                        <text x={(bx + ix) / 2 + s(14)} y={(by + iy) / 2} className="etichetta-tratta" style={{ fontSize: s(17), textAnchor: "start" }}>
+                          richiesta all'hub
+                        </text>
+                        <text x={(hx + ix) / 2 - s(14)} y={(hy + iy) / 2} className="etichetta-tratta hub" style={{ fontSize: s(17), textAnchor: "end" }}>
+                          giorno 1 e 8: {TRATTE_RENATO.hub.km} km
                         </text>
                         <g transform={`translate(${hx} ${hy}) scale(${s(1)})`}>
                           <circle r={17} className="casa" />
                           <Home x={-10} y={-10} width={20} height={20} color="#fff" />
                           <text y={-26} className="etichetta-nodo forte" textAnchor="middle" style={{ fontSize: 17 }}>
-                            Montagnana · casa di Giovanni
+                            Agordo · casa di Renato
                           </text>
                         </g>
                       </g>
@@ -217,12 +226,12 @@ export default function VistaMappa() {
                   })()}
 
                 {NODI.map((n) => {
-                  if (n.id === "IOV" && !L.onco) return null;
+                  if (n.id === "IOV" && !L.onco && !L.percorso) return null;
                   const [x, y] = pos(n);
                   const r = n.ruolo === "hub_eu" ? 12 : n.ruolo === "hub_prov" ? 9.5 : n.id === "IOV" ? 9 : 6.5;
                   const prev = L.previsione ? (n.struttura ? livelloSaturazione(previsione[n.id] ?? 0) : null) : undefined;
                   const fill = prev ? COLORE_LIVELLO[prev] : n.id === "IOV" ? "#f8e05c" : n.ruolo === "altro" ? "#8aa0b8" : "#1f5fae";
-                  const spento = prev === null || (L.giovanni && m.zoom && !["PD", "SC", "PS", "SA", "IOV"].includes(n.id) && !prev);
+                  const spento = prev === null || (L.percorso && m.zoom && ![SPOKE_CASO.nodo, HUB_CASO.nodo, "PD"].includes(n.id) && !prev);
                   const sel = m.nodo === n.id;
                   return (
                     <g
@@ -247,6 +256,7 @@ export default function VistaMappa() {
                 })}
 
                 {L.ictus &&
+                  !m.zoom &&
                   (() => {
                     const [x, y] = pos(nodoPerId("BL"));
                     return (
@@ -308,7 +318,7 @@ export default function VistaMappa() {
                 </button>
               </li>
               <li className={m.passo >= 4 ? "fatto" : m.passo === 3 ? "prossimo" : ""}>
-                <button onClick={azioni.giovanni} data-testid="passo-giovanni">
+                <button onClick={azioni.percorso} data-testid="passo-renato">
                   <span className="n">4</span> {PASSI_MAPPA[3].bottone}
                 </button>
               </li>
@@ -332,7 +342,7 @@ export default function VistaMappa() {
                 </label>
               </li>
               <li className={m.passo >= 7 ? "fatto" : m.passo === 6 ? "prossimo" : ""}>
-                <button onClick={azioni.hub} data-testid="passo-hub">
+                <button onClick={azioni.caso} data-testid="passo-caso">
                   <span className="n">7</span> {PASSI_MAPPA[6].bottone} <ArrowRight size={18} aria-hidden="true" />
                 </button>
               </li>
@@ -355,21 +365,21 @@ export default function VistaMappa() {
             </div>
           )}
 
-          {L.giovanni && (
-            <div className="card conto-mappa" data-testid="conto-mappa">
+          {L.percorso && (
+            <div className="card conto-mappa" data-testid="viaggi-renato">
               <h2>
-                {G.conto[0].toUpperCase() + G.conto.slice(1)} · {SEDUTE_RIABILITAZIONE} sedute <Stima>stime</Stima>
+                Viaggi di {RENATO.nome} <Stima>stime</Stima>
               </h2>
               <div className="conto-righe">
-                <span className="oggi">
-                  Tutto a Padova <b>~{conto.tuttoHub.km} km</b> · ~{conto.tuttoHub.ore} ore
-                </span>
                 <span className="proposta">
-                  A Schiavonia <b>~{conto.misto.km} km</b> · ~{conto.misto.ore} ore
+                  Prima linea a {SPOKE_CASO.breve} <b>{TRATTE_RENATO.spoke.km} km</b> · {oreMin(TRATTE_RENATO.spoke.minuti)}
+                </span>
+                <span className="hub">
+                  Giorno 1 e 8 all'{HUB_CASO.nodo} <b>{TRATTE_RENATO.hub.km} km</b> · {oreMin(TRATTE_RENATO.hub.minuti)}
                 </span>
               </div>
               <p className="muted piccolo" style={{ margin: 0 }}>
-                {kmRisparmiatiAViaggio(GIOVANNI.comune, "schiavonia")} km in meno a ogni viaggio: stesse cifre della scena 2.
+                Il {SECONDA_LINEA.farmaco} si fa solo all'hub: il viaggio lo organizza la rete.
               </p>
             </div>
           )}
@@ -446,22 +456,53 @@ export default function VistaMappa() {
       </div>
 
       {m.spiegazione && (
-        <div className="velo" role="dialog" aria-label="Perché Schiavonia?" onClick={() => patch({ spiegazione: false })}>
-          <div className="finestra" onClick={(e) => e.stopPropagation()} data-testid="perche-schiavonia">
+        <div className="velo" role="dialog" aria-label="Perché l'IOV?" onClick={() => patch({ spiegazione: false })}>
+          <div className="finestra" onClick={(e) => e.stopPropagation()} data-testid="perche-iov">
             <div className="azioni" style={{ justifyContent: "space-between" }}>
-              <h2 style={{ margin: 0 }}>Perché Schiavonia? La stessa scheda della vista Hub</h2>
+              <h2 style={{ margin: 0 }}>Perché l'IOV? La seconda linea si fa solo all'hub</h2>
               <button className="btn-link" onClick={() => patch({ spiegazione: false })} aria-label="Chiudi">
                 <X size={22} />
               </button>
             </div>
             <div className="griglia g-7-5">
               <div className="colonna">
-                <ElencoStrutture ordinate={abb.ordinate} escluse={abb.escluse} />
+                <p style={{ marginTop: 0 }}>
+                  Il PDTA segna il <b>{SECONDA_LINEA.farmaco}</b> come farmaco <b>solo hub</b>. Hub abilitati, dal più vicino a casa di {RENATO.nome}:
+                </p>
+                <ol className="hub-abilitati">
+                  {[...SECONDA_LINEA.hubAbilitati]
+                    .sort((a, b) => a.km - b.km)
+                    .map((h, i) => (
+                      <li key={h.nodo} className={i === 0 ? "scelto" : ""}>
+                        <Hospital size={20} aria-hidden="true" /> <b>{h.nome}</b> · {h.km} km <Stima>stima</Stima>
+                        {i === 0 && <span className="badge-scelta">proposto</span>}
+                      </li>
+                    ))}
+                </ol>
+                <p className="muted piccolo">Il sistema propone, l'oncologo decide, {RENATO.nome} sceglie.</p>
               </div>
               <div className="colonna">
-                <SchedaRischio profilo={GIOVANNI.profilo} comune={GIOVANNI.comune} struttura={abb.ordinate[0]?.struttura.id ?? "schiavonia"} />
-                <button className="btn btn-pieno" onClick={azioni.hub}>
-                  Apri nella vista Hub <ArrowRight size={20} aria-hidden="true" />
+                {PIANO_RENATO && (
+                  <div className="card">
+                    <h3 style={{ marginTop: 0 }}>Date proposte all'hub</h3>
+                    <ul className="lista-semplice">
+                      {PIANO_RENATO.date.map((x, i) => (
+                        <li key={x}>
+                          <b>
+                            Giorno {SECONDA_LINEA.giorniHub[i].giorno}: {dataLunga(x)}
+                          </b>
+                        </li>
+                      ))}
+                    </ul>
+                    {PIANO_RENATO.scartate.map((x) => (
+                      <p key={x.inizio} className="muted piccolo" style={{ margin: "6px 0 0" }}>
+                        Scartato il {dataBreve(x.inizio)}: {x.motivo}.
+                      </p>
+                    ))}
+                  </div>
+                )}
+                <button className="btn btn-pieno" onClick={azioni.caso}>
+                  Apri il caso di Renato <ArrowRight size={20} aria-hidden="true" />
                 </button>
               </div>
             </div>

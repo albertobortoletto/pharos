@@ -43,7 +43,8 @@ export interface LivelliMappa {
   ospedaliera: boolean;
   ictus: boolean;
   onco: boolean;
-  giovanni: boolean;
+  /** Percorso del paziente del caso di studio (Renato). */
+  percorso: boolean;
   previsione: boolean;
 }
 
@@ -109,7 +110,7 @@ export const PASSI_CASO = 6;
 
 export const MAPPA_INIZIALE: StatoMappa = {
   passo: 1,
-  livelli: { ospedaliera: true, ictus: false, onco: false, giovanni: false, previsione: false },
+  livelli: { ospedaliera: true, ictus: false, onco: false, percorso: false, previsione: false },
   mesi: 0,
   zoom: false,
   nodo: null,
