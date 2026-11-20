@@ -1,0 +1,28 @@
+/* Stili delle nuove viste (mappa, hub, spoke, paziente, AI). Usano i token di demo.css. */
+
+/* ——— Header con selettore di ruolo ——— */
+.nav-ruoli button svg { flex: none; }
+.orologio {
+  display: inline-flex; align-items: center; gap: 8px; color: #dfe7f1; font-weight: 700; font-size: 17px;
+  white-space: nowrap; padding: 6px 6px 6px 12px; border-radius: 999px; background: #ffffff14;
+}
+.tempo-piu {
+  border: 1px solid #ffffff40; background: transparent; color: #dfe7f1; border-radius: 999px; padding: 2px 10px;
+  font-weight: 700; font-size: 15px; opacity: .55; transition: opacity .2s;
+}
+.tempo-piu:hover, .tempo-piu:focus-visible { opacity: 1; background: #ffffff1f; }
+.sottonav {
+  display: flex; gap: 6px; justify-content: center; padding: 10px var(--pad) 0; flex-wrap: wrap;
+}
+.sottonav button {
+  display: flex; align-items: center; gap: 8px; border: 2px solid var(--bordo); background: var(--bianco); color: var(--notte);
+  font-weight: 700; font-size: 18px; padding: 6px 14px; border-radius: 999px; white-space: nowrap;
+}
+.sottonav button .n { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; border: 2px solid currentColor; font-size: 15px; }
+.sottonav button.attiva { background: var(--accento); border-color: var(--accento); }
+.sottonav button.visitata:not(.attiva) .n { background: var(--spoke); border-color: var(--spoke); }
+@media (max-width: 1700px) { .orologio { font-size: 15px; } .nav-ruoli button { font-size: 16px; } }
+.header { gap: 14px; }
+.nav-ruoli { gap: 2px; }
+.nav-ruoli button { padding: 8px 12px; gap: 7px; font-size: 17px; }
+.app:not(.vista-racconto) .brand small { display: none; }
