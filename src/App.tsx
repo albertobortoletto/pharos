@@ -1,5 +1,5 @@
-import { Component, useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useState, type CSSProperties, type ReactNode } from "react";
-import { BookOpen, BrainCircuit, Building2, ChevronLeft, ChevronRight, Clock, Database, Hospital, Map as MapIcon, Maximize, RotateCcw, Smartphone } from "lucide-react";
+import { Component, useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { BookOpen, BrainCircuit, Building2, ChevronDown, ChevronLeft, ChevronRight, Clock, Database, Hospital, Map as MapIcon, Maximize, RotateCcw, Smartphone } from "lucide-react";
 import { ESTRAZIONE, LETTERA } from "./data/lettera";
 import { fraseNellaLettera } from "./engine/frasi";
 import { etichettaOra, etichettaOraBreve } from "./engine/orologio";
@@ -29,14 +29,60 @@ const COLORI_RUOLO = {
   ai: ["var(--accento)", "var(--accento-tinta)", "var(--accento-testo)"],
 } as const;
 
-const VISTE: { id: Vista; nome: string; ruolo: keyof typeof COLORI_RUOLO; ico: ReactNode }[] = [
+const VISTE: { id: Vista; nome: string; ruolo: keyof typeof COLORI_RUOLO; ico: ReactNode; extra?: boolean }[] = [
   { id: "mappa", nome: "Mappa", ruolo: "percorso", ico: <MapIcon size={20} aria-hidden="true" /> },
   { id: "hub", nome: "Hub", ruolo: "hub", ico: <Hospital size={20} aria-hidden="true" /> },
   { id: "spoke", nome: "Spoke", ruolo: "spoke", ico: <Building2 size={20} aria-hidden="true" /> },
   { id: "paziente", nome: "Paziente/Caregiver", ruolo: "paziente", ico: <Smartphone size={20} aria-hidden="true" /> },
-  { id: "ai", nome: "Come ragiona il sistema", ruolo: "ai", ico: <BrainCircuit size={20} aria-hidden="true" /> },
-  { id: "racconto", nome: "Racconto (6 scene)", ruolo: "hub", ico: <BookOpen size={20} aria-hidden="true" /> },
+  // Approfondimenti: fuori dal percorso principale della demo, nel menu a tendina.
+  { id: "ai", nome: "Come ragiona il sistema", ruolo: "ai", ico: <BrainCircuit size={20} aria-hidden="true" />, extra: true },
+  { id: "racconto", nome: "Racconto (6 scene)", ruolo: "hub", ico: <BookOpen size={20} aria-hidden="true" />, extra: true },
 ];
+
+/** Menu «Approfondimenti»: le viste extra, da aprire dopo la demo. Si chiude con Esc o con un clic fuori. */
+function MenuApprofondimenti({ vista, vai }: { vista: Vista; vai: (v: Vista) => void }) {
+  const [aperto, setAperto] = useState(false);
+  const rif = useRef<HTMLDivElement>(null);
+  const extra = VISTE.filter((v) => v.extra);
+  const attiva = extra.find((v) => v.id === vista);
+  useEffect(() => {
+    if (!aperto) return;
+    const fuori = (e: MouseEvent) => !rif.current?.contains(e.target as Node) && setAperto(false);
+    const esc = (e: KeyboardEvent) => e.key === "Escape" && setAperto(false);
+    document.addEventListener("mousedown", fuori);
+    document.addEventListener("keydown", esc);
+    return () => {
+      document.removeEventListener("mousedown", fuori);
+      document.removeEventListener("keydown", esc);
+    };
+  }, [aperto]);
+  return (
+    <div className="menu-extra" ref={rif}>
+      <button className={attiva ? "attiva" : ""} aria-expanded={aperto} aria-haspopup="menu" onClick={() => setAperto(!aperto)} data-testid="menu-approfondimenti">
+        {attiva ? attiva.ico : null}
+        {attiva ? attiva.nome : "Approfondimenti"} <ChevronDown size={18} aria-hidden="true" />
+      </button>
+      {aperto && (
+        <div className="menu-extra-elenco" role="menu">
+          {extra.map((v) => (
+            <button
+              key={v.id}
+              role="menuitem"
+              className={v.id === vista ? "attiva" : ""}
+              onClick={() => {
+                vai(v.id);
+                setAperto(false);
+              }}
+            >
+              {v.ico}
+              {v.nome}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 const SCENE_COMPONENTI = [Scena1Dimissione, Scena2Sede, Scena3Passaggio, Scena4Itinerario, Scena5Foglio, Scena6ServeHub];
 
@@ -131,16 +177,17 @@ function Demo() {
             <div className="brand">
               <Logo />
               <span>
-                HubSpoke<small>Medical Journey</small>
+                Pharos<small>Percorsi di cura connessi</small>
               </span>
             </div>
             <nav className="nav nav-ruoli" aria-label="Viste per ruolo">
-              {VISTE.map((v) => (
+              {VISTE.filter((v) => !v.extra).map((v) => (
                 <button key={v.id} className={st.vista === v.id ? "attiva" : ""} onClick={() => d({ t: "vista", vista: v.id })} aria-current={st.vista === v.id ? "page" : undefined}>
                   {v.ico}
                   {v.nome}
                 </button>
               ))}
+              <MenuApprofondimenti vista={st.vista} vai={(v) => d({ t: "vista", vista: v })} />
             </nav>
             <div className="azioni-header">
               <span className="orologio" title={`Data simulata della demo: ${etichettaOra(st.ora)}`}>

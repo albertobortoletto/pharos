@@ -1,4 +1,6 @@
-# pharos · HubSpoke Medical Journey
+<img src="assets/pharos-logo.svg" alt="Pharos" width="360">
+
+# Pharos · percorsi di cura connessi
 
 Demo offline di una rete hub-spoke in Veneto: l'hub di Padova, lo spoke di Schiavonia e il percorso di un paziente dopo la prostatectomia. Il sistema propone e spiega, il medico decide, il paziente sceglie. **Solo dati fittizi.**
 
@@ -12,8 +14,10 @@ Un solo file HTML, che si apre con un doppio clic e non fa chiamate di rete. La 
 | **Hub** | urologo e infermiera di percorso | I pazienti con fasi in corso, dalla lettera alle fasi, la proposta di sede, i pareri, l'elenco «da chiamare» e i motivi di rifiuto |
 | **Spoke** | fisiatra di Schiavonia | Le richieste con il timer, «Prendo in carico», le sedute, il controllo di metà percorso e i posti dichiarati |
 | **Paziente/Caregiver** | Giovanni, Laura, medico di base | SMS e foglio stampabile, l'app di Laura (timeline e «Ho un problema») e la copia in sola lettura |
-| **Come ragiona il sistema** | giuria e clinici | Il flusso, le quattro schede dei modelli, il grafo della rete bayesiana, i pesi e cosa il sistema non fa mai |
-| **Racconto** | — | Le 6 scene della demo originale |
+| **Come ragiona il sistema** (menu *Approfondimenti*) | giuria e clinici | Il flusso, le quattro schede dei modelli, il grafo della rete bayesiana, i pesi e cosa il sistema non fa mai |
+| **Racconto** (menu *Approfondimenti*) | — | Le 6 scene della demo originale |
+
+La demo si fa con le prime quattro viste. «Come ragiona il sistema» e il «Racconto» stanno nel menu **Approfondimenti**, da aprire dopo; i link «Come è calcolato?» portano comunque alla spiegazione del modello.
 
 Tutte le viste leggono lo **stesso store**: un'azione in una vista si vede subito nelle altre. Il tasto **+1 g** fa avanzare il tempo simulato. **Ricomincia demo** riporta tutto allo stato iniziale.
 
@@ -105,5 +109,6 @@ src/
   componenti/  scheda di rischio, timer, badge
 test/          test di coerenza
 strumenti/     script per i confini e le probabilità
+assets/       logo di Pharos (SVG: icona, icona in negativo, logo con nome)
 riferimenti/   la demo originale e la mappa di partenza (sola consultazione)
 ```

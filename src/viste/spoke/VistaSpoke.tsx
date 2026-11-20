@@ -59,20 +59,19 @@ function Richiesta({ s }: { s: Scheda }) {
                 <li key={c}>{testoMotivo(CONDIZIONI_RIENTRO, c)}</li>
               ))}
             </ul>
-            <small className="muted">scritte dall'urologo · parere o rientro: {UROLOGIA_HUB.telefono} (fittizio)</small>
+            <small className="muted">Urologia dell'hub: {UROLOGIA_HUB.telefono} (fittizio)</small>
           </dd>
-          <dt>Documenti</dt>
+          <dt>Documenti nel FSE</dt>
           <dd className="documenti">
             {DOCUMENTI_FSE.map((x) => (
               <span key={x} className="doc">
-                <FileText size={16} aria-hidden="true" /> {x} <small>documento nel FSE</small>
+                <FileText size={16} aria-hidden="true" /> {x}
               </span>
             ))}
           </dd>
         </dl>
         <div>
           <SchedaRischio profilo={p.profilo} comune={p.comune} struttura={s.struttura} compatta />
-          <small className="muted">Questo numero lo vede anche l'hub. Il paziente no.</small>
         </div>
       </div>
       {!motivo ? (
@@ -316,7 +315,7 @@ function PostiDichiarati() {
       {liberi <= 0 ? (
         <p className="avviso-posti">Posti esauriti: Schiavonia non compare più nelle proposte dell'hub.</p>
       ) : (
-        <p className="muted piccolo">Il contatore scende a ogni presa in carico. A zero, Schiavonia sparisce dalle proposte dell'hub.</p>
+        <p className="muted piccolo">A zero, Schiavonia esce dalle proposte dell'hub.</p>
       )}
       {p.dichiarati !== iniziali && (
         <button className="btn-link" onClick={() => d({ t: "posti_ripristina", struttura: SPOKE })} data-testid="posti-ripristina">
@@ -340,7 +339,7 @@ export default function VistaSpoke() {
       <Testata
         chi="Fisiatra · Spoke di Schiavonia"
         titolo="Richieste e pazienti in carico"
-        frase={`Ogni richiesta ha ${PARAMETRI.risposta_spoke_ore} ore per una risposta. La fase diventa dello spoke solo con «Prendo in carico».`}
+        frase={`Risposta entro ${PARAMETRI.risposta_spoke_ore} ore. La fase passa allo spoke con «Prendo in carico».`}
       />
       <div className="griglia g-8-4">
         <div className="colonna">
@@ -363,10 +362,6 @@ export default function VistaSpoke() {
           <div className="card nota-spoke">
             <h2>Cosa resta all'hub</h2>
             <p>Controllo urologico con l'esame istologico, percorso oncologico, {G.parere} e {G.rientro}.</p>
-            <p className="muted piccolo">
-              Parere: entro {PARAMETRI.parere_giorni_lavorativi} giorni lavorativi, {PARAMETRI.parere_urgente_ore} ore se urgente. Rientro con priorità entro{" "}
-              {PARAMETRI.rientro_priorita_giorni} giorni.
-            </p>
           </div>
         </div>
       </div>

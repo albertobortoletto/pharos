@@ -129,9 +129,9 @@ export function Pareri() {
         <div className="card">
           <h2>Le regole del {G.parere}</h2>
           <p>
-            Risposta entro <b>{PARAMETRI.parere_giorni_lavorativi} giorni lavorativi</b>, <b>{PARAMETRI.parere_urgente_ore} ore</b> se urgente. Termine fissato nel PDTA (esempio).
+            Risposta entro <b>{PARAMETRI.parere_giorni_lavorativi} giorni lavorativi</b>, <b>{PARAMETRI.parere_urgente_ore} ore</b> se urgente.
           </p>
-          <p className="muted piccolo">Se il termine passa, il parere va al coordinatore del GOM. Nessuna risposta automatica: decide sempre l'urologo.</p>
+          <p className="muted piccolo">Scaduto il termine, passa al coordinatore del GOM.</p>
         </div>
         {chiusi.length > 0 && (
           <div className="card">

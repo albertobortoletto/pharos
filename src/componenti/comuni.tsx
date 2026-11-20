@@ -3,12 +3,29 @@ import { Building2, Hospital, Ticket } from "lucide-react";
 import { useDemo } from "../stato/contesto";
 import { SOGLIA_POCHI_DATI } from "../engine/similar";
 
-export function Logo({ size = 40 }: { size?: number }) {
+/** Logo di Pharos: faro con la croce nella lanterna, il paziente al centro e tre raggi di luce (assets/pharos-icona.svg). */
+export function Logo({ size = 40, tratto = "#fff", luce = "#5BD0E0" }: { size?: number; tratto?: string; luce?: string }) {
   return (
-    <svg className="brand-logo" width={size} height={size} viewBox="0 0 40 40" aria-hidden="true">
-      <path d="M9 28 C 16 10, 24 10, 31 14" stroke="#F8E05C" strokeWidth="4" fill="none" strokeLinecap="round" />
-      <circle cx="9" cy="28" r="7" fill="#4474B4" stroke="#fff" strokeWidth="2" />
-      <circle cx="31" cy="14" r="5.5" fill="#74B45C" stroke="#fff" strokeWidth="2" />
+    <svg className="brand-logo" width={size} height={size} viewBox="0 0 64 64" aria-hidden="true">
+      <g transform="translate(-7 -1.5)">
+        <g fill="none" stroke={tratto} strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M24.5 25.5 L19.4 57.6 Q19 60 21.4 60 H42.6 Q45 60 44.6 57.6 L39.5 25.5" />
+          <rect x="21" y="15" width="22" height="10.5" rx="3.2" />
+          <path d="M24.2 43 Q27.4 49.6 32 49.6 Q36.6 49.6 39.8 43" />
+        </g>
+        <path d="M24.5 15 a7.5 7.5 0 0 1 15 0 z" fill={tratto} />
+        <circle cx="32" cy="42.4" r="3.2" fill={tratto} />
+        <path d="M28.6 48.4 H35.4 L36.6 60 H33.6 L32 53 L30.4 60 H27.4 Z" fill={tratto} />
+        <g fill={luce}>
+          <rect x="30.7" y="16.9" width="2.6" height="6.7" rx="0.7" />
+          <rect x="28.65" y="18.95" width="6.7" height="2.6" rx="0.7" />
+        </g>
+        <g stroke={luce} strokeWidth="2.6" strokeLinecap="round">
+          <path d="M47 15.5 L58 10.5" />
+          <path d="M47.5 20.25 H59.5" />
+          <path d="M47 25 L58 30" />
+        </g>
+      </g>
     </svg>
   );
 }

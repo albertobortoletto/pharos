@@ -221,7 +221,7 @@ export default function VistaMappa() {
                   const [x, y] = pos(n);
                   const r = n.ruolo === "hub_eu" ? 12 : n.ruolo === "hub_prov" ? 9.5 : n.id === "IOV" ? 9 : 6.5;
                   const prev = L.previsione ? (n.struttura ? livelloSaturazione(previsione[n.id] ?? 0) : null) : undefined;
-                  const fill = prev ? COLORE_LIVELLO[prev] : n.id === "IOV" ? "#f8e05c" : n.ruolo === "altro" ? "#8aa0b8" : "#4474b4";
+                  const fill = prev ? COLORE_LIVELLO[prev] : n.id === "IOV" ? "#f8e05c" : n.ruolo === "altro" ? "#8aa0b8" : "#1f5fae";
                   const spento = prev === null || (L.giovanni && m.zoom && !["PD", "SC", "PS", "SA", "IOV"].includes(n.id) && !prev);
                   const sel = m.nodo === n.id;
                   return (
