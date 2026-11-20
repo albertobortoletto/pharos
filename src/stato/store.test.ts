@@ -105,3 +105,15 @@ describe("store condiviso", () => {
   });
 });
 
+
+describe("caso di studio di Renato", () => {
+  it("avanza un passo alla volta, solo con il passo successivo", () => {
+    let st = statoIniziale();
+    expect(st.caso.passo).toBe(0);
+    st = reducer(st, { t: "caso_avanza", passo: 2 });
+    expect(st.caso.passo).toBe(0);
+    st = reducer(reducer(st, { t: "caso_avanza", passo: 1 }), { t: "caso_avanza", passo: 2 });
+    expect(st.caso.passo).toBe(2);
+    expect(reducer(st, { t: "caso_reset" }).caso.passo).toBe(0);
+  });
+});

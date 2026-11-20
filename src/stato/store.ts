@@ -15,7 +15,7 @@ import { scadenzaParere, type Parere, type RispostaParere } from "../engine/pare
 import type { IdModello } from "../testi/ai";
 import { SCENE, type AzioneRacconto, type EsitoRichiamo, type StatoRacconto } from "./racconto";
 
-export type Vista = "mappa" | "hub" | "spoke" | "paziente" | "ai" | "racconto";
+export type Vista = "mappa" | "hub" | "spoke" | "paziente" | "caso" | "ai" | "racconto";
 export type SezioneHub = "pazienti" | "lettera" | "proposta" | "pareri" | "infermiera" | "motivi";
 
 export const ID_SCHEDA_GIOVANNI = "g-riab";
@@ -100,7 +100,12 @@ export interface Stato {
   pazienteSelezionato: string;
   sezioneHub: SezioneHub;
   ai: StatoAi;
+  /** Caso di studio di Renato: quanti passi della storia sono stati confermati con un clic (0 = nessuno). */
+  caso: { passo: number };
 }
+
+/** Numero di passi del caso di Renato (vedi viste/caso). */
+export const PASSI_CASO = 6;
 
 export const MAPPA_INIZIALE: StatoMappa = {
   passo: 1,
@@ -160,6 +165,7 @@ export function statoIniziale(): Stato {
     pazienteSelezionato: "giovanni",
     sezioneHub: "pazienti",
     ai: AI_INIZIALE,
+    caso: { passo: 0 },
   };
 }
 
@@ -168,6 +174,8 @@ export function statoIniziale(): Stato {
 export type Azione =
   | AzioneRacconto
   | { t: "vista"; vista: Vista; paziente?: string; sezione?: SezioneHub }
+  | { t: "caso_avanza"; passo: number }
+  | { t: "caso_reset" }
   | { t: "sezione_hub"; sezione: SezioneHub }
   | { t: "apri_ai"; modello: IdModello }
   | { t: "ai"; patch: Partial<StatoAi> }
@@ -491,6 +499,11 @@ export function reducer(st: Stato, a: Azione): Stato {
       return { ...st, mappa: { ...st.mappa, ...a.patch } };
     case "mappa_reset":
       return { ...st, mappa: MAPPA_INIZIALE };
+    case "caso_avanza":
+      // Un passo alla volta e solo il successivo: ogni passaggio vuole il suo clic umano.
+      return a.passo === st.caso.passo + 1 && a.passo <= PASSI_CASO ? { ...st, caso: { passo: a.passo } } : st;
+    case "caso_reset":
+      return { ...st, caso: { passo: 0 } };
     case "reset_tutto":
       return statoIniziale();
   }

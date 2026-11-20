@@ -27,6 +27,7 @@ Questa demo usa **solo dati fittizi**. Qui sotto, per ogni gruppo di dati: da do
 - Distanze e tempi delle tratte (`tratte.ts`): stime da ricontrollare con la matrice ISTAT.
 - Probabilità della rete bayesiana (`bn_cpt.json`): stime iniziali **illustrative**, generate da `strumenti/genera_cpt.mjs`. In un pilota: prior epidemiologiche (es. Registro Tumori del Veneto), stime dei clinici del GOM, casi chiusi.
 - Dataset sintetico di 284 pazienti (`engine/synth.ts`, parametri in `sintetico.ts`), generato con seed fisso dalla rete bayesiana stessa.
+- Caso di studio di Renato (`casoRenato.ts`): persona, date, telefoni, distanze, date libere del day hospital dell'IOV e hub abilitati sono inventati. Lo schema del farmaco (giorno 1 e giorno 8 all'hub) è un esempio: da verificare su scheda tecnica, determina AIFA e con il GOM.
 - Volumi e casi simili: in un pilota, PNE Agenas e casi chiusi della rete.
 - Pesi del punteggio di abbinamento (`pesi.ts`): da concordare con i clinici.
 

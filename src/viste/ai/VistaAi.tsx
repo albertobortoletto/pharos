@@ -17,7 +17,7 @@ import { PochiDati, Simulato, Testata } from "../../componenti/comuni";
 import { BarraPunteggio, PannelloPesi, useAbbinamentoGiovanni } from "../hub/PropostaSede";
 import { GrafoBayes } from "./GrafoBayes";
 
-const NOMI_VISTE = { mappa: "alla mappa", hub: "alla vista Hub", spoke: "alla vista Spoke", paziente: "alla vista Paziente", ai: "", racconto: "al racconto" } as const;
+const NOMI_VISTE = { mappa: "alla mappa", hub: "alla vista Hub", spoke: "alla vista Spoke", paziente: "alla vista Paziente", ai: "", caso: "al caso di Renato", racconto: "al racconto" } as const;
 
 /** Schema del flusso: riquadri cliccabili, ramo laterale (Markov) e ciclo di ritorno (esito → modelli). */
 function Flusso() {

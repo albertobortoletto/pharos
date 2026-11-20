@@ -376,3 +376,59 @@
 
 /* «Come è calcolato?»: il modello scelto arriva in cima, sotto la barra fissa. */
 .vista-ai .card { scroll-margin-top: 116px; }
+
+/* ——— Caso di studio: Renato ——— */
+.g-caso { grid-template-columns: 4fr 5fr 3.2fr; align-items: start; }
+.persona-testa { display: flex; gap: 14px; align-items: center; margin-bottom: 8px; }
+.persona-testa b { display: block; font-size: var(--t-scheda); }
+.persona-testa small { color: var(--grigio); font-size: var(--t-piccolo); }
+.persona-avatar { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; background: var(--notte); color: #fff; font-weight: 700; font-size: 24px; flex: none; }
+.persona p { margin: 0 0 8px; }
+.persona dl { margin: 0; display: grid; gap: 4px; }
+.persona dt { font-weight: 700; color: var(--hub-testo); font-size: var(--t-piccolo); text-transform: uppercase; letter-spacing: .06em; }
+.persona dd { margin: 0 0 6px; }
+.persona ul { margin: 0; padding-left: 20px; }
+.minimappa svg { width: 100%; height: auto; max-height: 330px; display: block; }
+.minimappa .provincia { stroke-width: 1; }
+.minimappa .regione { stroke-width: 1.6; }
+.mm-spoke { stroke: var(--spoke); stroke-width: 4; stroke-linecap: round; }
+.mm-richiesta { stroke: var(--hub); stroke-width: 3; stroke-dasharray: 8 6; }
+.mm-alternativa { stroke: #8aa0b8; stroke-width: 2; stroke-dasharray: 3 6; }
+.mm-viaggio { stroke: var(--notte); stroke-width: 4.5; stroke-linecap: round; }
+.mm-nodo { stroke: #fff; stroke-width: 2.5; }
+.mm-nodo.spoke { fill: var(--spoke); }
+.mm-nodo.hub { fill: var(--hub); }
+.mm-nodo.altro { fill: #8aa0b8; }
+.mm-nodo.attivo { stroke: var(--accento); stroke-width: 4; }
+.mm-casa { fill: var(--paziente); stroke: #fff; stroke-width: 2.5; }
+.mm-etichetta { font-size: 15px; font-weight: 700; fill: var(--notte); paint-order: stroke; stroke: #fff; stroke-width: 4px; }
+.mm-etichetta.piccola { font-size: 13px; fill: var(--grigio); }
+.mm-legenda { margin: 6px 0 0; font-weight: 600; }
+.caso-resp { margin: 0 0 12px; padding: 8px 12px; border-radius: var(--r-btn); background: var(--ruolo-tinta); color: var(--ruolo-testo); }
+.caso-passi { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.caso-passi > li { display: grid; grid-template-columns: 36px 1fr; gap: 12px; position: relative; padding-bottom: 14px; }
+.caso-passi > li:not(:last-child)::before { content: ""; position: absolute; left: 16px; top: 36px; bottom: 0; width: 3px; background: var(--bordo); }
+.caso-passi > li.fatto:not(:last-child)::before { background: var(--spoke); }
+.caso-n { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; border: 2px solid var(--bordo); background: #fff; color: var(--grigio); z-index: 1; }
+.fatto .caso-n { background: var(--spoke); border-color: var(--spoke); color: #fff; }
+.prossimo .caso-n { border-color: var(--hub); color: var(--hub); box-shadow: 0 0 0 4px var(--hub-tinta); }
+.dopo { opacity: .5; }
+.caso-titolo { display: flex; align-items: center; gap: 8px; min-height: 34px; }
+.caso-titolo small { margin-left: auto; color: var(--grigio); font-weight: 600; }
+.caso-esito { margin: 2px 0 0; color: var(--grigio); }
+.caso-proposta { margin-top: 6px; padding: 12px 14px; border: 2px solid var(--hub-tinta); border-radius: var(--r-card); background: #fff; }
+.caso-proposta p { margin: 0 0 8px; }
+.caso-proposta .azioni { margin-top: 8px; align-items: center; }
+.caso-pdta { display: block; padding: 8px 10px; background: var(--hub-tinta); border-radius: var(--r-btn); }
+.caso-doc, .caso-date, .caso-promemoria { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 6px; }
+.caso-date li { display: grid; padding: 8px 12px; border-left: 5px solid var(--hub); background: var(--hub-tinta); border-radius: 6px; }
+.caso-date span { color: var(--hub-testo); font-size: var(--t-piccolo); }
+.caso-scartata { color: var(--allarme); font-weight: 600; }
+.caso-promemoria li { display: flex; gap: 8px; align-items: flex-start; }
+.caso-promemoria svg { flex: none; margin-top: 4px; color: var(--hub); }
+.per-renato .bolla { background: var(--grigio-chiaro); border-radius: 14px; padding: 10px 14px; margin-bottom: 12px; display: grid; gap: 4px; }
+.per-renato .bolla small { color: var(--grigio); }
+.caso-ok { margin: 0; padding: 8px 12px; border-radius: var(--r-btn); background: var(--spoke-tinta); color: var(--spoke-testo); font-weight: 700; }
+.caso-bilancio { margin-top: 8px; padding: 12px 16px; border-radius: var(--r-card); background: var(--spoke-tinta); }
+.caso-bilancio h3 { margin: 0 0 6px; color: var(--spoke-testo); }
+.caso-bilancio ul { margin: 0; padding-left: 20px; }
