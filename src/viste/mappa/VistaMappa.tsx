@@ -115,7 +115,8 @@ export default function VistaMappa() {
     perche: () => patch({ spiegazione: true, passo: passo(5) }),
     mesi: (x: number) => patch({ livelli: { ...L, previsione: true }, mesi: x, passo: passo(6) }),
     hub: () => {
-      patch({ passo: 7 });
+      // Dal riquadro «Perché Schiavonia?» (passo 5) si chiude il riquadro e il passo 6 resta da fare al ritorno.
+      patch({ spiegazione: false, passo: m.spiegazione ? m.passo : 7 });
       d({ t: "vista", vista: "hub", paziente: "giovanni", sezione: "proposta" });
     },
   };

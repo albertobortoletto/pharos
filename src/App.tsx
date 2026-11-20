@@ -89,6 +89,8 @@ function Demo() {
   }, [s.scena, vai, racconto]);
 
   useEffect(() => {
+    // Aperta da «Come è calcolato?»: la schermata AI scorre da sola al modello, non in cima.
+    if (st.vista === "ai" && st.ai.modello) return;
     window.scrollTo({ top: 0 });
   }, [s.scena, st.vista]);
   useEffect(() => {

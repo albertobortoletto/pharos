@@ -374,3 +374,6 @@
 .lista-forte { margin: 0; padding-left: 22px; display: grid; gap: 6px; font-size: 20px; font-weight: 600; }
 .evoluzione { border: 2px dashed var(--bordo); background: transparent; box-shadow: none; }
 .evoluzione ul { margin: 0; padding-left: 22px; }
+
+/* «Come è calcolato?»: il modello scelto arriva in cima, sotto la barra fissa. */
+.vista-ai .card { scroll-margin-top: 116px; }

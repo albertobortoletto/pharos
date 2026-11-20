@@ -309,6 +309,22 @@ export function ElencoStrutture({ ordinate, escluse }: Abbinamento) {
   );
 }
 
+/** Solo per la demo: se uno spoke escluso ha cambiato i posti dichiarati, si ripristinano da qui senza cambiare vista. */
+function PostiCambiati({ escluse }: Pick<Abbinamento, "escluse">) {
+  const { st, d } = useStore();
+  const cambiate = escluse.filter((e) => st.posti[e.struttura.id] && st.posti[e.struttura.id].dichiarati !== e.struttura.posti_settimana);
+  if (!cambiate.length) return null;
+  return (
+    <p className="azioni" style={{ marginTop: 8 }}>
+      {cambiate.map((e) => (
+        <button key={e.struttura.id} className="btn-link" onClick={() => d({ t: "posti_ripristina", struttura: e.struttura.id })} data-testid={`hub-ripristina-${e.struttura.id}`}>
+          <RotateCcw size={16} style={{ verticalAlign: "-2px" }} aria-hidden="true" /> Ripristina i {G.posti} di {e.struttura.nome} ({e.struttura.posti_settimana}) (demo)
+        </button>
+      ))}
+    </p>
+  );
+}
+
 export function PropostaSede() {
   const { st } = useStore();
   const { ordinate, escluse } = useAbbinamentoGiovanni();
@@ -332,6 +348,7 @@ export function PropostaSede() {
       <div className="griglia g-7-5">
         <div className="colonna">
           <ElencoStrutture ordinate={ordinate} escluse={escluse} />
+          <PostiCambiati escluse={escluse} />
           {bozza && <Decisione ordinate={ordinate} />}
         </div>
         <div className="colonna">

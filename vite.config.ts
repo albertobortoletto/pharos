@@ -23,6 +23,8 @@ export default defineConfig({
   plugins: [react(), viteSingleFile({ removeViteModuleLoader: true }), cspSoloInBuild()],
   build: {
     assetsInlineLimit: 100_000_000,
+    // Nessun polyfill di modulepreload: nel file unico non serve e conterrebbe una fetch().
+    modulePreload: { polyfill: false },
     cssCodeSplit: false,
     target: "es2020",
     reportCompressedSize: false,
