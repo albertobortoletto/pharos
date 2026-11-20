@@ -38,6 +38,18 @@ export const QUESITI_PARERE: Motivo[] = [
   { id: "altro", testo: "Altro" },
 ];
 
+/** Condizioni di rientro all'hub scritte dall'urologo nella scheda di fase. Elenco chiuso. */
+export const CONDIZIONI_RIENTRO: Motivo[] = [
+  { id: "febbre", testo: "Febbre persistente" },
+  { id: "difficolta_urinare", testo: "Difficoltà a urinare" },
+  { id: "non_miglioramento", testo: "Nessun miglioramento della continenza al controllo di metà percorso" },
+  { id: "dolore", testo: "Dolore pelvico che non passa" },
+  { id: "ematuria", testo: "Sangue nelle urine" },
+];
+
+/** Documenti collegati alla scheda: solo il titolo, il contenuto resta nel FSE. */
+export const DOCUMENTI_FSE = ["Lettera di dimissione", "Verbale operatorio", "Esame istologico (in attesa)"];
+
 /** Problemi segnalati dal caregiver nell'app. Elenco chiuso. */
 export const PROBLEMI_CAREGIVER: Motivo[] = [
   { id: "accompagnare", testo: "Non posso più accompagnarlo" },

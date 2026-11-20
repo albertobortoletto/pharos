@@ -3,6 +3,7 @@
 import { PARAMETRI } from "../data/pdta";
 import { STRUTTURE } from "../data/strutture";
 import { ITINERARIO } from "../data/itinerario";
+import { SEDUTE_RIABILITAZIONE } from "../data/tratte";
 import { INFERMIERA } from "../data/persone";
 import { PARERI_FITTIZI, SCHEDE_FITTIZIE } from "../data/schede";
 import { PESI_PREDEFINITI, type Pesi } from "../data/pesi";
@@ -66,11 +67,12 @@ export interface Stato {
     restaHubMotivo: string | null;
     invioInCorso: boolean;
     seconda: string | null;
-    controllo: "si" | "no" | null;
     condizioniRientro: string[];
   };
   schede: Scheda[];
   sedute: Record<string, number>;
+  /** Esito del controllo obbligatorio alla seduta del PDTA: «c'è miglioramento?». */
+  controlli: Record<string, "si" | "no">;
   posti: Record<string, { dichiarati: number; occupati: number }>;
   richiamo: EsitoRichiamo | null;
   luigi: StatoRacconto["luigi"];
@@ -118,11 +120,11 @@ export function statoIniziale(): Stato {
       restaHubMotivo: null,
       invioInCorso: false,
       seconda: null,
-      controllo: null,
       condizioniRientro: CONDIZIONI_RIENTRO_PREDEFINITE,
     },
     schede: [nuovaScheda(ID_SCHEDA_GIOVANNI, "giovanni", "riabilitazione_pavimento_pelvico", "schiavonia", ora), ...schedeFittizie],
     sedute,
+    controlli: Object.fromEntries(SCHEDE_FITTIZIE.filter((x) => x.sedute >= PARAMETRI.seduta_controllo).map((x) => [x.id, "si"])),
     posti,
     richiamo: null,
     luigi: { esito: null, motivo: null },
@@ -150,10 +152,11 @@ export type Azione =
   | { t: "tempo"; ore: number }
   | { t: "proponi_giovanni"; struttura: string; seconda: string | null }
   | { t: "posti_dichiarati"; struttura: string; n: number }
+  | { t: "posti_ripristina"; struttura: string }
   | { t: "spoke_accetta"; scheda: string }
   | { t: "spoke_rifiuta"; scheda: string; motivo: string }
   | { t: "registra_seduta"; scheda: string }
-  | { t: "controllo_miglioramento"; esito: "si" | "no" }
+  | { t: "controllo_miglioramento"; scheda: string; esito: "si" | "no" }
   | { t: "chiedi_parere"; scheda: string; quesito: string; testo: string; urgente: boolean }
   | { t: "rispondi_parere"; id: string; risposta: RispostaParere }
   | { t: "invia_esito"; scheda: string }
@@ -256,9 +259,10 @@ function annullaSede(st: Stato): Stato {
   return {
     ...st,
     posti,
-    giovanni: { ...st.giovanni, sede: "schiavonia", sedeConfermata: false, restaHubMotivo: null, invioInCorso: false, seconda: null, controllo: null },
+    giovanni: { ...st.giovanni, sede: "schiavonia", sedeConfermata: false, restaHubMotivo: null, invioInCorso: false, seconda: null },
     schede: st.schede.map((x) => (x.id === ID_SCHEDA_GIOVANNI ? nuovaScheda(x.id, x.paziente, x.prestazione, "schiavonia", st.ora) : x)),
     sedute: { ...st.sedute, [ID_SCHEDA_GIOVANNI]: 0 },
+    controlli: Object.fromEntries(Object.entries(st.controlli).filter(([k]) => k !== ID_SCHEDA_GIOVANNI)),
     pareri: st.pareri.filter((p) => p.scheda !== ID_SCHEDA_GIOVANNI),
     registroDemo: senza(senza(st.registroDemo, "resta_hub", "Riabilitazione"), "spoke_non_puo", "Riabilitazione"),
   };
@@ -352,6 +356,11 @@ export function reducer(st: Stato, a: Azione): Stato {
       const p = st.posti[a.struttura];
       return p ? { ...st, posti: { ...st.posti, [a.struttura]: { ...p, dichiarati: Math.max(0, Math.min(30, Math.round(a.n))) } } } : st;
     }
+    case "posti_ripristina": {
+      const p = st.posti[a.struttura];
+      const orig = STRUTTURE.find((x) => x.id === a.struttura)?.posti_settimana;
+      return p && orig !== undefined ? { ...st, posti: { ...st.posti, [a.struttura]: { ...p, dichiarati: orig } } } : st;
+    }
     case "spoke_accetta":
       return accetta(st, a.scheda);
     case "spoke_rifiuta":
@@ -361,14 +370,16 @@ export function reducer(st: Stato, a: Azione): Stato {
       let r = st;
       if (s.stato === "PRENOTATA") r = aggiornaScheda(r, a.scheda, { tipo: "iniziaSedute" });
       if (schedaDi(r, a.scheda).stato !== "IN_CORSO") return st;
-      const n = Math.min(10, (r.sedute[a.scheda] ?? 0) + 1);
+      if (!puoRegistrareSeduta(r, a.scheda)) return st;
+      const n = Math.min(SEDUTE_RIABILITAZIONE, (r.sedute[a.scheda] ?? 0) + 1);
       r = { ...r, sedute: { ...r.sedute, [a.scheda]: n } };
-      if (n >= 10) r = aggiornaScheda(r, a.scheda, { tipo: "fineSedute" });
+      if (n >= SEDUTE_RIABILITAZIONE) r = aggiornaScheda(r, a.scheda, { tipo: "fineSedute" });
       return r;
     }
     case "controllo_miglioramento": {
-      let r: Stato = { ...st, giovanni: { ...st.giovanni, controllo: a.esito } };
-      if (a.esito === "no") r = aggiornaScheda(r, ID_SCHEDA_GIOVANNI, { tipo: "segnalaNonMiglioramento" });
+      if (schedaDi(st, a.scheda).stato !== "IN_CORSO" || st.controlli[a.scheda]) return st;
+      let r: Stato = { ...st, controlli: { ...st.controlli, [a.scheda]: a.esito } };
+      if (a.esito === "no") r = aggiornaScheda(r, a.scheda, { tipo: "segnalaNonMiglioramento" });
       return r;
     }
     case "chiedi_parere": {
@@ -400,8 +411,10 @@ export function reducer(st: Stato, a: Azione): Stato {
         r = aggiornaScheda(r, p.scheda, { tipo: "rientro", motivo: a.risposta.motivo });
         if (p.scheda === ID_SCHEDA_GIOVANNI)
           r = notifica(r, `L'urologo vuole rivedere Giovanni a Padova: ${dataLunga(a.risposta.dataSlot)}, posto riservato ai rientri. ${INFERMIERA.nome} vi chiamerà per i dettagli.`);
-      } else if (p.scheda === ID_SCHEDA_GIOVANNI) {
-        r = notifica(r, "L'urologo ha risposto alla fisiatra: Giovanni continua la riabilitazione a Schiavonia.");
+      } else {
+        // L'hub dice di continuare: le sedute riprendono.
+        if (r.controlli[p.scheda] === "no") r = { ...r, controlli: { ...r.controlli, [p.scheda]: "si" } };
+        if (p.scheda === ID_SCHEDA_GIOVANNI) r = notifica(r, "L'urologo ha risposto alla fisiatra: Giovanni continua la riabilitazione a Schiavonia.");
       }
       return r;
     }
@@ -441,6 +454,18 @@ export function reducer(st: Stato, a: Azione): Stato {
 }
 
 // ——— Selettori ———
+
+/** Alla seduta del controllo serve la risposta «c'è miglioramento?»; se è «no», serve prima il parere dell'hub. */
+export function puoRegistrareSeduta(st: Stato, scheda: string): boolean {
+  const n = st.sedute[scheda] ?? 0;
+  if (n >= SEDUTE_RIABILITAZIONE) return false;
+  if (n >= PARAMETRI.seduta_controllo && st.controlli[scheda] !== "si") return false;
+  return true;
+}
+
+/** Serve ora il controllo «c'è miglioramento?» per questa scheda. */
+export const serveControllo = (st: Stato, scheda: string) =>
+  schedaDi(st, scheda).stato === "IN_CORSO" && (st.sedute[scheda] ?? 0) >= PARAMETRI.seduta_controllo && !st.controlli[scheda];
 
 /** Posti liberi questa settimana per struttura (dichiarati − presi in carico). */
 export function postiLiberi(st: Stato, struttura: string): number {
