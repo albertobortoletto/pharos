@@ -26,3 +26,20 @@
 .nav-ruoli { gap: 2px; }
 .nav-ruoli button { padding: 8px 12px; gap: 7px; font-size: 17px; }
 .app:not(.vista-racconto) .brand small { display: none; }
+
+/* Badge sull'origine del dato: simulato, dedotto, pochi dati */
+.badge-dato {
+  display: inline-block;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+  padding: 2px 8px;
+  border-radius: var(--r-badge);
+  border: 1px solid;
+  vertical-align: 2px;
+  margin-left: 6px;
+  white-space: nowrap;
+}
+.badge-dato.simulato { color: var(--accento-testo); background: var(--accento-tinta); border-color: #e9d36a; }
+.badge-dato.dedotto { color: var(--percorso-testo); background: var(--percorso-tinta); border-color: var(--percorso); border-style: dashed; }
+.badge-dato.pochi { color: var(--allarme); background: var(--allarme-tinta); border-color: #e8b4ae; }

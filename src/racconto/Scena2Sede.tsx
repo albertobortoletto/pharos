@@ -9,6 +9,7 @@ import { propostaPdta } from "../engine/propostaPdta";
 import { contoViaggio } from "../engine/viaggio";
 import { dataLunga } from "../engine/date";
 import { useDemo } from "../stato/contesto";
+import { G } from "../testi/glossario";
 import { BadgeResp, Stima, Testata } from "../componenti/comuni";
 
 const num = (n: number) => n.toLocaleString("it-IT");
@@ -221,8 +222,8 @@ export default function Scena2Sede({ vai }: { vai: (n: number) => void }) {
                 <Check size={30} color="var(--spoke-testo)" strokeWidth={3} aria-hidden="true" />
                 <div style={{ flex: 1 }}>
                   <b>Schiavonia confermata. Ora tocca allo spoke accettare.</b>
-                  Fino ad allora Giovanni resta in carico all'hub. Proposta a Giovanni e alla figlia Laura: sono d'accordo, e possono cambiare
-                  idea in ogni momento.
+                  Fino ad allora Giovanni resta in carico all'hub. Proposta a Giovanni e alla figlia Laura: sono d'accordo. La sede si sceglie
+                  all'inizio di ogni fase. Per qualsiasi problema, il riferimento è l'{G.infermieraPrima}.
                   <div className="azioni" style={{ marginTop: 10 }}>
                     <button className="btn btn-pieno" onClick={() => vai(2)} data-testid="avanti-2">
                       Presa in carico <ArrowRight size={22} aria-hidden="true" />
