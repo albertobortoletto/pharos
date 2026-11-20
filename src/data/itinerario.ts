@@ -19,6 +19,8 @@ export const ITINERARIO = {
   ora_sedute: "9:30",
   luogo_spoke: "Ospedale di Schiavonia – Medicina riabilitativa, piano terra",
   indirizzo_spoke: "Via Albere 30, Monselice (PD)",
+  /** Se la riabilitazione resta all'hub. */
+  luogo_hub: "Padova – Medicina riabilitativa, Azienda ospedaliera",
   cosa_portare: ["Tessera sanitaria", "Lettera di dimissione", "Promemoria con le date"],
   controllo_hub: {
     data: "2026-12-21",
