@@ -1,35 +1,25 @@
 // Vista SPOKE: la fisiatra di Schiavonia. Richieste in arrivo, posti dichiarati, pazienti in carico, parere, esito.
 import { useState } from "react";
-import { AlarmClock, Check, FileText, Minus, Plus, RotateCcw, Send, X } from "lucide-react";
+import { Check, FileText, Minus, Plus, RotateCcw, Send, X } from "lucide-react";
 import { PARAMETRI, prestazione } from "../../data/pdta";
 import { strutturaPerId } from "../../data/strutture";
 import { SEDUTE_RIABILITAZIONE } from "../../data/tratte";
 import { CONDIZIONI_RIENTRO, DOCUMENTI_FSE, MOTIVI_SERVE_HUB, MOTIVI_SPOKE, QUESITI_PARERE } from "../../data/motivi";
 import { UROLOGIA_HUB } from "../../data/persone";
 import { pazientePerId } from "../../data/pazienti";
-import { dataBreve, formattaOre } from "../../engine/date";
+import { dataBreve } from "../../engine/date";
 import { dataDaOra } from "../../engine/orologio";
 import { NOME_STATO, type Scheda } from "../../engine/scheda";
 import { useStore } from "../../stato/contesto";
 import { CONDIZIONI_RIENTRO_PREDEFINITE, ID_SCHEDA_GIOVANNI, postiLiberi, puoRegistrareSeduta, serveControllo } from "../../stato/store";
 import { Simulato, Testata } from "../../componenti/comuni";
 import { SchedaRischio } from "../../componenti/rischio";
+import { Timer } from "../../componenti/timer";
 import { G } from "../../testi/glossario";
 
 const SPOKE = "schiavonia";
 const IN_CARICO = ["ACCETTATA", "PRENOTATA", "IN_CORSO", "ESITO_ATTESO", "ESITO_RICEVUTO", "RIENTRO"];
 const testoMotivo = (elenco: { id: string; testo: string }[], id: string | null) => elenco.find((m) => m.id === id)?.testo ?? id ?? "";
-
-/** Timer leggibile: «entro 1 g 6 h», rosso se scaduto. */
-export function Timer({ scadenza, ora, prima = "entro" }: { scadenza: number | null; ora: number; prima?: string }) {
-  if (scadenza === null) return null;
-  const resto = scadenza - ora;
-  return (
-    <span className={`timer ${resto <= 0 ? "scaduto" : resto <= 12 ? "vicino" : ""}`} data-testid="timer">
-      <AlarmClock size={16} aria-hidden="true" /> {resto <= 0 ? formattaOre(resto) : `${prima} ${formattaOre(resto)}`}
-    </span>
-  );
-}
 
 function Richiesta({ s }: { s: Scheda }) {
   const { st, d } = useStore();

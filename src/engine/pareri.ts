@@ -31,6 +31,18 @@ export function scadenzaParere(ora: number, urgente: boolean, p: ParametriPdta):
   return ora + giorniTra(oggi, fine) * 24;
 }
 
+/** Slot riservati ai rientri all'hub: i prossimi giorni lavorativi entro il termine di priorità del PDTA. */
+export function slotRientri(ora: number, p: ParametriPdta, quanti = 3): string[] {
+  const oggi = dataDaOra(ora);
+  const slot: string[] = [];
+  for (let g = 1; slot.length < quanti; g++) {
+    const d = aggiungiGiorniLavorativi(oggi, g);
+    if (giorniTra(oggi, d) > p.rientro_priorita_giorni) break;
+    slot.push(d);
+  }
+  return slot;
+}
+
 export function parereScaduto(x: Parere, ora: number): boolean {
   return x.risposta === null && ora >= x.scadenza;
 }

@@ -15,6 +15,7 @@ import { scadenzaParere, type Parere, type RispostaParere } from "../engine/pare
 import { SCENE, type AzioneRacconto, type EsitoRichiamo, type StatoRacconto } from "./racconto";
 
 export type Vista = "mappa" | "hub" | "spoke" | "paziente" | "ai" | "racconto";
+export type SezioneHub = "pazienti" | "lettera" | "proposta" | "pareri" | "infermiera" | "motivi";
 
 export const ID_SCHEDA_GIOVANNI = "g-riab";
 
@@ -83,6 +84,7 @@ export interface Stato {
   pesi: Pesi;
   mappa: StatoMappa;
   pazienteSelezionato: string;
+  sezioneHub: SezioneHub;
 }
 
 export const MAPPA_INIZIALE: StatoMappa = {
@@ -141,6 +143,7 @@ export function statoIniziale(): Stato {
     pesi: PESI_PREDEFINITI,
     mappa: MAPPA_INIZIALE,
     pazienteSelezionato: "giovanni",
+    sezioneHub: "pazienti",
   };
 }
 
@@ -148,7 +151,8 @@ export function statoIniziale(): Stato {
 
 export type Azione =
   | AzioneRacconto
-  | { t: "vista"; vista: Vista; paziente?: string }
+  | { t: "vista"; vista: Vista; paziente?: string; sezione?: SezioneHub }
+  | { t: "sezione_hub"; sezione: SezioneHub }
   | { t: "tempo"; ore: number }
   | { t: "proponi_giovanni"; struttura: string; seconda: string | null }
   | { t: "posti_dichiarati"; struttura: string; n: number }
@@ -349,7 +353,9 @@ export function reducer(st: Stato, a: Azione): Stato {
 
     // — viste per ruolo —
     case "vista":
-      return { ...st, vista: a.vista, pazienteSelezionato: a.paziente ?? st.pazienteSelezionato };
+      return { ...st, vista: a.vista, pazienteSelezionato: a.paziente ?? st.pazienteSelezionato, sezioneHub: a.sezione ?? st.sezioneHub };
+    case "sezione_hub":
+      return { ...st, sezioneHub: a.sezione };
     case "tempo":
       return avanzaTempo(st, a.ore);
     case "posti_dichiarati": {

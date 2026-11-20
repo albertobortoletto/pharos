@@ -186,6 +186,17 @@ export function eventiDaTimer(s: Scheda, ora: number): EventoScheda[] {
   return [];
 }
 
+/** Cosa misura il timer di ogni stato (vista Hub e vista Spoke). */
+export const ETICHETTA_TIMER: Partial<Record<StatoScheda, string>> = {
+  INVIATA: "lo spoke deve rispondere",
+  ACCETTATA: "lo spoke deve prenotare",
+  PRENOTATA: "prima seduta",
+  ESITO_ATTESO: "esito atteso",
+  ESITO_RICEVUTO: "l'hub chiude la fase",
+  RIFIUTATA: "nuova sede",
+  RIENTRO: "rientro all'hub",
+};
+
 export const NOME_STATO: Record<StatoScheda, string> = {
   BOZZA: "Bozza",
   INVIATA: "Inviata allo spoke",

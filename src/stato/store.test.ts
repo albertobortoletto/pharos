@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { PARAMETRI } from "../data/pdta";
+import { slotRientri } from "../engine/pareri";
 import { daChiamare, postiLiberi, reducer, serveControllo, schedaGiovanni, statoIniziale, vistaRacconto, type Azione, type Stato } from "./store";
 
 const applica = (st: Stato, ...azioni: Azione[]) => azioni.reduce(reducer, st);
@@ -88,4 +90,18 @@ describe("store condiviso", () => {
     expect(st.posti.schiavonia.dichiarati).toBe(6);
     expect(postiLiberi(st, "schiavonia")).toBe(4);
   });
+
+  it("hub: approva con seconda opzione; se lo spoke rifiuta, si invia alla seconda", () => {
+    let st = applica(statoIniziale(), { t: "proponi_giovanni", struttura: "schiavonia", seconda: "piove" });
+    expect(schedaGiovanni(st).stato).toBe("INVIATA");
+    st = applica(st, { t: "spoke_rifiuta", scheda: "g-riab", motivo: "agenda_oltre" }, { t: "invia_seconda" });
+    expect(schedaGiovanni(st).stato).toBe("INVIATA");
+    expect(schedaGiovanni(st).struttura).toBe("piove");
+  });
+
+  it("slot riservati ai rientri: giorni lavorativi entro il termine di priorità", () => {
+    const slot = slotRientri(statoIniziale().ora, PARAMETRI);
+    expect(slot).toEqual(["2026-11-23", "2026-11-24", "2026-11-25"]);
+  });
 });
+
