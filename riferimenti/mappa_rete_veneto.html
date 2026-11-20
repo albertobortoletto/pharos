@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rete Viva – Mappa delle reti hub-spoke del Veneto</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root{
+    --bg:#f6f5f1; --panel:#ffffff; --ink:#1d2330; --muted:#6b7280; --line:#e5e3dc;
+    --hub-eu:#7a1f3d; --hub-prov:#c2410c; --node:#64748b;
+    --ictus:#2563eb; --onco:#0f766e; --pilota:#b45309; --casa:#111827;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  .app{display:grid;grid-template-columns:360px 1fr;height:100vh}
+  aside{background:var(--panel);border-right:1px solid var(--line);overflow-y:auto;padding:20px 20px 28px}
+  h1{font-size:20px;margin:0 0 4px;letter-spacing:-.01em}
+  .sub{color:var(--muted);font-size:13px;margin:0 0 18px;line-height:1.45}
+  h2{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:22px 0 10px}
+  .layer{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:background .15s}
+  .layer:hover{background:#faf9f6}
+  .layer input{margin-top:3px;accent-color:var(--ink)}
+  .layer b{font-size:14px;display:block}
+  .layer span{font-size:12px;color:var(--muted);line-height:1.4}
+  .sw{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+  .legend div{font-size:13px;margin:6px 0;display:flex;align-items:center;gap:8px}
+  .dot{width:12px;height:12px;border-radius:50%;display:inline-block;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+  .card{background:#fbfaf7;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.5}
+  .card .big{font-size:22px;font-weight:700;letter-spacing:-.01em}
+  .kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+  .msg{margin-top:16px;padding:12px 14px;border-left:3px solid var(--pilota);background:#fff8ef;font-size:13px;line-height:1.5;border-radius:0 8px 8px 0}
+  .src{font-size:12px;color:var(--muted);line-height:1.5}
+  .src li{margin-bottom:4px}
+  #map{height:100vh}
+  .leaflet-popup-content{font-size:13px;line-height:1.45}
+  .tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:999px;background:#eef2f7;margin:2px 4px 0 0}
+  .warn{color:#92400e}
+  @media (max-width:820px){.app{grid-template-columns:1fr;grid-template-rows:auto 60vh}#map{height:60vh}aside{order:2}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <h1>La rete sulla carta</h1>
+    <p class="sub">Reti hub-spoke del Veneto ricostruite da fonti pubbliche. Il ruolo di un ospedale cambia a seconda della rete: per esempio Belluno è hub provinciale nella rete ospedaliera, ma spoke nella rete ictus.</p>
+
+    <h2>Livelli</h2>
+    <label class="layer"><input type="checkbox" id="L_ospedali" checked>
+      <div><b>Rete ospedaliera</b><span>Hub europei e hub provinciali (schede ospedaliere, DGR 614/2019)</span></div></label>
+    <label class="layer"><input type="checkbox" id="L_ictus">
+      <div><b><i class="sw" style="background:var(--ictus)"></i>Rete ictus</b><span>6 hub e 17 spoke (DGR 4198/2008). I collegamenti sono ricostruiti in base alla macro-area dell'ULSS</span></div></label>
+    <label class="layer"><input type="checkbox" id="L_onco">
+      <div><b><i class="sw" style="background:var(--onco)"></i>Rete oncologica (ROV)</b><span>IOV come hub regionale. Gli altri poli vanno completati con il Decreto 82/2024</span></div></label>
+    <label class="layer"><input type="checkbox" id="L_giovanni" checked>
+      <div><b><i class="sw" style="background:var(--pilota)"></i>Percorso di Giovanni (pilota)</b><span>Montagnana → Padova oppure Schiavonia. Tumore della prostata, fase di riabilitazione</span></div></label>
+
+    <h2>Legenda</h2>
+    <div class="legend">
+      <div><i class="dot" style="background:var(--hub-eu)"></i>Hub di riferimento europeo</div>
+      <div><i class="dot" style="background:var(--hub-prov)"></i>Hub provinciale</div>
+      <div><i class="dot" style="background:var(--node)"></i>Altro ospedale della rete</div>
+      <div><i class="dot" style="background:var(--casa)"></i>Domicilio del paziente</div>
+    </div>
+
+    <h2>Il conto del viaggio di Giovanni</h2>
+    <div class="card" id="conto"></div>
+
+    <div class="msg"><b>Il punto:</b> la rete sulla carta esiste già. Mancano le linee che collegano i passaggi di ogni singolo paziente.</div>
+
+    <h2>Fonti</h2>
+    <ul class="src">
+      <li>Schede ospedaliere, DGR 614/2019 (PSSR 2019-2023, LR 48/2018)</li>
+      <li>Rete ictus, DGR 4198/2008. Elenco degli hub e degli spoke: Neurological Sciences 2023, PMC9905755</li>
+      <li>ROV: DGR 2067/2013, DGR 1711/2022, Decreto 82/2024</li>
+      <li>Persona del team: 560 km e 10 ore evitabili su 10 sedute</li>
+      <li class="warn">Le coordinate sono approssimate. I collegamenti dello spoke all'hub nella rete ictus sono dedotti dalla macro-area ULSS. Le distanze sono stime (linea d'aria × 1,3). Tutto va verificato prima della presentazione.</li>
+    </ul>
+  </aside>
+  <div id="map"></div>
+</div>
+
+<script>
+/* =========================================================
+   DATI – modificabili. Ogni nodo: id, nome, coordinate, ULSS,
+   ruolo nella rete ospedaliera, ruoli nelle reti di patologia.
+   ========================================================= */
+const NODI = [
+  // Hub di riferimento europeo (DGR 614/2019)
+  {id:"PD",   nome:"Azienda Ospedale-Università Padova", lat:45.4030, lng:11.8870, ulss:"AO Padova", ruolo:"hub_eu",  ictus:"hub"},
+  {id:"VR",   nome:"AOUI Verona (Borgo Trento)",         lat:45.4500, lng:10.9900, ulss:"AOUI Verona", ruolo:"hub_eu", ictus:"hub"},
+  // Hub provinciali = ospedali capoluogo (DGR 614/2019)
+  {id:"TV",   nome:"Treviso – Ca' Foncello",             lat:45.6730, lng:12.2560, ulss:"ULSS 2", ruolo:"hub_prov", ictus:"hub"},
+  {id:"ME",   nome:"Mestre – Ospedale dell'Angelo",      lat:45.5090, lng:12.2240, ulss:"ULSS 3", ruolo:"hub_prov", ictus:"hub"},
+  {id:"VI",   nome:"Vicenza – San Bortolo",              lat:45.5560, lng:11.5430, ulss:"ULSS 8", ruolo:"hub_prov", ictus:"hub"},
+  {id:"RO",   nome:"Rovigo – Santa Maria della Misericordia", lat:45.0700, lng:11.7900, ulss:"ULSS 5", ruolo:"hub_prov", ictus:"hub"},
+  {id:"BL",   nome:"Belluno – San Martino",              lat:46.1350, lng:12.2130, ulss:"ULSS 1", ruolo:"hub_prov", ictus:"spoke"},
+  // Spoke della rete ictus (DGR 4198/2008)
+  {id:"FE",   nome:"Feltre",                  lat:46.0180, lng:11.9050, ulss:"ULSS 1", ruolo:"altro", ictus:"spoke"},
+  {id:"CF",   nome:"Castelfranco Veneto",     lat:45.6700, lng:11.9300, ulss:"ULSS 2", ruolo:"altro", ictus:"spoke"},
+  {id:"CO",   nome:"Conegliano",              lat:45.8870, lng:12.2970, ulss:"ULSS 2", ruolo:"altro", ictus:"spoke"},
+  {id:"MI",   nome:"Mirano",                  lat:45.4950, lng:12.1080, ulss:"ULSS 3", ruolo:"altro", ictus:"spoke"},
+  {id:"VE",   nome:"Venezia – SS. Giovanni e Paolo", lat:45.4400, lng:12.3420, ulss:"ULSS 3", ruolo:"altro", ictus:"spoke"},
+  {id:"PO",   nome:"Portogruaro",             lat:45.7760, lng:12.8370, ulss:"ULSS 4", ruolo:"altro", ictus:"spoke"},
+  {id:"CI",   nome:"Cittadella",              lat:45.6460, lng:11.7830, ulss:"ULSS 6", ruolo:"altro", ictus:"spoke"},
+  {id:"PS",   nome:"Piove di Sacco",          lat:45.2990, lng:12.0320, ulss:"ULSS 6", ruolo:"altro", ictus:"spoke"},
+  {id:"SA",   nome:"Padova – Sant'Antonio",   lat:45.3960, lng:11.8990, ulss:"ULSS 6", ruolo:"altro", ictus:"spoke"},
+  {id:"SC",   nome:"Schiavonia (Monselice)",  lat:45.2360, lng:11.7280, ulss:"ULSS 6", ruolo:"altro", ictus:"spoke"},
+  {id:"BA",   nome:"Bassano del Grappa",      lat:45.7720, lng:11.7300, ulss:"ULSS 7", ruolo:"altro", ictus:"spoke"},
+  {id:"ST",   nome:"Santorso",                lat:45.7330, lng:11.4000, ulss:"ULSS 7", ruolo:"altro", ictus:"spoke"},
+  {id:"AR",   nome:"Arzignano",               lat:45.5180, lng:11.3300, ulss:"ULSS 8", ruolo:"altro", ictus:"spoke"},
+  {id:"LE",   nome:"Legnago",                 lat:45.1950, lng:11.3070, ulss:"ULSS 9", ruolo:"altro", ictus:"spoke"},
+  {id:"NE",   nome:"Negrar – Sacro Cuore",    lat:45.5280, lng:10.9370, ulss:"ULSS 9", ruolo:"altro", ictus:"spoke"},
+  {id:"PE",   nome:"Peschiera del Garda",     lat:45.4400, lng:10.6950, ulss:"ULSS 9", ruolo:"altro", ictus:"spoke"},
+  // Rete oncologica
+  {id:"IOV",  nome:"IOV – Istituto Oncologico Veneto (Padova)", lat:45.4048, lng:11.8905, ulss:"IRCCS", ruolo:"altro", onco:"hub"},
+];
+
+// Macro-aree della rete ictus: ULSS → hub (fonte: PMC9905755)
+const MACRO_ICTUS = {
+  "ULSS 1":"TV","ULSS 2":"TV","ULSS 3":"ME","ULSS 4":"ME","ULSS 5":"RO",
+  "ULSS 6":"PD","AO Padova":"PD","ULSS 7":"VI","ULSS 8":"VI","ULSS 9":"VR","AOUI Verona":"VR"
+};
+
+// Collegamenti oncologici: solo quelli del pilota. DA COMPLETARE con i poli ROV (Decreto 82/2024)
+const LINK_ONCO = [
+  {da:"IOV", a:"PD", nota:"Polo oncologico di Padova: IOV e AOU (da verificare)"},
+  {da:"PD",  a:"SC", nota:"Pilota prostata: riabilitazione delegata allo spoke (ipotesi del team)"},
+];
+
+const CASA = {nome:"Domicilio di Giovanni – Montagnana (PD)", lat:45.2330, lng:11.4650};
+const SEDUTE = 10, KMH = 50, FATTORE_STRADA = 1.3;
+
+/* =========================================================
+   MAPPA
+   ========================================================= */
+const map = L.map('map',{zoomControl:true}).setView([45.62,11.85],8);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
+  attribution:'&copy; OpenStreetMap &copy; CARTO', maxZoom:18
+}).addTo(map);
+
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const byId = Object.fromEntries(NODI.map(n=>[n.id,n]));
+const colore = r => r==="hub_eu"?css('--hub-eu'):r==="hub_prov"?css('--hub-prov'):css('--node');
+const raggio = r => r==="hub_eu"?11:r==="hub_prov"?8:5;
+
+function popupNodo(n){
+  const tags=[];
+  if(n.ruolo==="hub_eu") tags.push("Hub europeo");
+  if(n.ruolo==="hub_prov") tags.push("Hub provinciale");
+  if(n.ictus) tags.push("Ictus: "+n.ictus);
+  if(n.onco) tags.push("Oncologia: "+n.onco);
+  return `<b>${n.nome}</b><br>${n.ulss}<br>${tags.map(t=>`<span class="tag">${t}</span>`).join("")}`;
+}
+
+// Livello: rete ospedaliera
+const gOsp = L.layerGroup(NODI.filter(n=>n.id!=="IOV").map(n=>
+  L.circleMarker([n.lat,n.lng],{radius:raggio(n.ruolo),color:"#fff",weight:2,fillColor:colore(n.ruolo),fillOpacity:.95})
+   .bindPopup(popupNodo(n)).bindTooltip(n.nome,{direction:"top",offset:[0,-6]})
+));
+
+// Livello: rete ictus
+const gIctus = L.layerGroup();
+NODI.filter(n=>n.ictus==="spoke").forEach(s=>{
+  const h = byId[MACRO_ICTUS[s.ulss]];
+  if(!h) return;
+  L.polyline([[s.lat,s.lng],[h.lat,h.lng]],{color:css('--ictus'),weight:2,opacity:.7,dashArray:"4 4"})
+   .bindTooltip(`Ictus: ${s.nome} → ${h.nome}`).addTo(gIctus);
+});
+NODI.filter(n=>n.ictus==="hub").forEach(h=>
+  L.circleMarker([h.lat,h.lng],{radius:14,color:css('--ictus'),weight:2,fill:false}).bindTooltip("Hub ictus – "+h.nome).addTo(gIctus));
+
+// Livello: rete oncologica
+const gOnco = L.layerGroup();
+const iov = byId["IOV"];
+L.circleMarker([iov.lat,iov.lng],{radius:12,color:"#fff",weight:2,fillColor:css('--onco'),fillOpacity:.95})
+ .bindPopup(popupNodo(iov)+"<br><i>Hub di riferimento regionale per la patologia oncologica</i>").addTo(gOnco);
+LINK_ONCO.forEach(l=>{
+  const a=byId[l.da], b=byId[l.a];
+  L.polyline([[a.lat,a.lng],[b.lat,b.lng]],{color:css('--onco'),weight:4,opacity:.85}).bindTooltip(l.nota).addTo(gOnco);
+});
+
+// Livello: percorso di Giovanni
+function km(a,b){
+  const R=6371,toR=x=>x*Math.PI/180;
+  const dLat=toR(b.lat-a.lat), dLng=toR(b.lng-a.lng);
+  const h=Math.sin(dLat/2)**2+Math.cos(toR(a.lat))*Math.cos(toR(b.lat))*Math.sin(dLng/2)**2;
+  return 2*R*Math.asin(Math.sqrt(h))*FATTORE_STRADA;
+}
+const gGio = L.layerGroup();
+const casaIcon = L.circleMarker([CASA.lat,CASA.lng],{radius:8,color:"#fff",weight:2,fillColor:css('--casa'),fillOpacity:1}).bindPopup(`<b>${CASA.nome}</b><br>70 anni, non guida, lo accompagna la figlia`);
+casaIcon.addTo(gGio);
+const pd=byId["PD"], sc=byId["SC"];
+const kPD=km(CASA,pd), kSC=km(CASA,sc);
+L.polyline([[CASA.lat,CASA.lng],[pd.lat,pd.lng]],{color:"#9ca3af",weight:3,dashArray:"2 8"}).bindTooltip(`Oggi: Padova ≈ ${kPD.toFixed(0)} km a tratta`).addTo(gGio);
+L.polyline([[CASA.lat,CASA.lng],[sc.lat,sc.lng]],{color:css('--pilota'),weight:5}).bindTooltip(`Proposta: Schiavonia ≈ ${kSC.toFixed(0)} km a tratta`,{permanent:true,direction:"bottom"}).addTo(gGio);
+
+const risparmioKm = (kPD-kSC)*2*SEDUTE;
+const risparmioOre = risparmioKm/KMH;
+document.getElementById("conto").innerHTML = `
+  <div>10 sedute di riabilitazione dopo la prostatectomia</div>
+  <div class="kpis">
+    <div><div class="big">${Math.round(risparmioKm)} km</div>evitati (stima sulla mappa)</div>
+    <div><div class="big">${risparmioOre.toFixed(0)} h</div>di viaggio in meno</div>
+  </div>
+  <div style="margin-top:8px;color:var(--muted)">Dato della persona del team: <b>560 km e 10 ore</b>. La stima calcolata sulla mappa è in linea d'aria × 1,3: per i numeri finali usate le distanze stradali reali.</div>`;
+
+// Toggle dei livelli
+const LAYERS = {L_ospedali:gOsp, L_ictus:gIctus, L_onco:gOnco, L_giovanni:gGio};
+Object.entries(LAYERS).forEach(([id,g])=>{
+  const cb=document.getElementById(id);
+  const sync=()=>cb.checked?g.addTo(map):map.removeLayer(g);
+  cb.addEventListener("change",sync); sync();
+});
+</script>
+</body>
+</html>

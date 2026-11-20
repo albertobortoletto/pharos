@@ -1,0 +1,19 @@
+# Node / Vite
+node_modules/
+dist/
+dist-ssr/
+*.local
+.env*
+.vite/
+coverage/
+.vitest/
+*.log
+npm-debug.log*
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/*
+!.vscode/extensions.json
+.idea/
