@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Building2, Hospital, Ticket } from "lucide-react";
 import { useDemo } from "../stato/contesto";
+import { SOGLIA_POCHI_DATI } from "../engine/similar";
 
 export function Logo({ size = 40 }: { size?: number }) {
   return (
@@ -15,6 +16,33 @@ export function Logo({ size = 40 }: { size?: number }) {
 /** Etichetta «stima» / «stime». */
 export function Stima({ children = "stima" }: { children?: ReactNode }) {
   return <span className="stima">{children}</span>;
+}
+
+/** Badge «simulato»: il dato è inventato per la demo. */
+export function Simulato({ titolo = "Dato inventato per la demo" }: { titolo?: string }) {
+  return (
+    <span className="badge-dato simulato" title={titolo}>
+      simulato
+    </span>
+  );
+}
+
+/** Badge «dedotto»: il dato è ricostruito da noi, non scritto in un atto. */
+export function Dedotto({ titolo = "Ricostruito da noi, non scritto in un atto ufficiale" }: { titolo?: string }) {
+  return (
+    <span className="badge-dato dedotto" title={titolo}>
+      dedotto
+    </span>
+  );
+}
+
+/** Badge «pochi dati»: meno casi della soglia, il numero è poco affidabile. */
+export function PochiDati() {
+  return (
+    <span className="badge-dato pochi" title={`Meno di ${SOGLIA_POCHI_DATI} casi simili: dato poco affidabile`}>
+      pochi dati
+    </span>
+  );
 }
 
 export function Testata({ chi, titolo, frase, destra }: { chi: ReactNode; titolo: ReactNode; frase?: ReactNode; destra?: ReactNode }) {
