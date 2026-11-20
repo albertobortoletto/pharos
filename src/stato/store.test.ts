@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { daChiamare, postiLiberi, reducer, schedaGiovanni, statoIniziale, vistaRacconto, type Azione, type Stato } from "./store";
+import { daChiamare, postiLiberi, reducer, serveControllo, schedaGiovanni, statoIniziale, vistaRacconto, type Azione, type Stato } from "./store";
 
 const applica = (st: Stato, ...azioni: Azione[]) => azioni.reduce(reducer, st);
 
@@ -61,9 +61,31 @@ describe("store condiviso", () => {
     let st = applica(statoIniziale(), { t: "conferma_sede" }, { t: "spoke_accetta", scheda: "g-riab" });
     for (let i = 0; i < 5; i++) st = applica(st, { t: "registra_seduta", scheda: "g-riab" });
     expect(schedaGiovanni(st).stato).toBe("IN_CORSO");
-    st = applica(st, { t: "controllo_miglioramento", esito: "no" }, { t: "chiedi_parere", scheda: "g-riab", quesito: "continenza", testo: "", urgente: false });
+    st = applica(st, { t: "controllo_miglioramento", scheda: "g-riab", esito: "no" }, { t: "chiedi_parere", scheda: "g-riab", quesito: "continenza", testo: "", urgente: false });
     const p = st.pareri[0];
     st = applica(st, { t: "rispondi_parere", id: p.id, risposta: { tipo: "serve_hub", motivo: "valutazione_urologica", dataSlot: "2026-12-02" } });
     expect(schedaGiovanni(st).stato).toBe("RIENTRO");
+  });
+
+  it("alla seduta del controllo le sedute si fermano finché non c'è la risposta", () => {
+    let st = applica(statoIniziale(), { t: "conferma_sede" }, { t: "spoke_accetta", scheda: "g-riab" });
+    for (let i = 0; i < 7; i++) st = applica(st, { t: "registra_seduta", scheda: "g-riab" });
+    expect(st.sedute["g-riab"]).toBe(5);
+    expect(serveControllo(st, "g-riab")).toBe(true);
+    st = applica(st, { t: "controllo_miglioramento", scheda: "g-riab", esito: "no" });
+    st = applica(st, { t: "registra_seduta", scheda: "g-riab" });
+    expect(st.sedute["g-riab"]).toBe(5);
+    st = applica(st, { t: "chiedi_parere", scheda: "g-riab", quesito: "continenza", testo: "", urgente: true });
+    st = applica(st, { t: "rispondi_parere", id: st.pareri[0].id, risposta: { tipo: "continua" } });
+    st = applica(st, { t: "registra_seduta", scheda: "g-riab" });
+    expect(st.sedute["g-riab"]).toBe(6);
+  });
+
+  it("posti a zero: si possono ripristinare quelli dichiarati all'inizio", () => {
+    let st = applica(statoIniziale(), { t: "posti_dichiarati", struttura: "schiavonia", n: 0 });
+    expect(postiLiberi(st, "schiavonia")).toBe(0);
+    st = applica(st, { t: "posti_ripristina", struttura: "schiavonia" });
+    expect(st.posti.schiavonia.dichiarati).toBe(6);
+    expect(postiLiberi(st, "schiavonia")).toBe(4);
   });
 });

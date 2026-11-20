@@ -6,15 +6,21 @@ export interface PazienteFittizio {
   nome: string;
   eta: number;
   comune: string;
+  /** Evidenza per la rete bayesiana (fittizia), come il profilo di Giovanni. */
+  profilo: Record<string, string>;
 }
 
+const P = (eta: string, comorbidita: string, stadio: string, tipo_intervento: string, complicanza_postop: string, stato_funzionale: string, accompagnatore: string) => ({
+  eta, comorbidita, stadio, tipo_intervento, complicanza_postop, stato_funzionale, accompagnatore,
+});
+
 export const ALTRI_PAZIENTI: PazienteFittizio[] = [
-  { id: "franco", nome: "Franco B.", eta: 74, comune: "Conselve" },
-  { id: "rosa", nome: "Rosa C.", eta: 68, comune: "Este" },
-  { id: "sergio", nome: "Sergio P.", eta: 71, comune: "Monselice" },
-  { id: "bruno", nome: "Bruno L.", eta: 77, comune: "Bagnoli di Sopra" },
-  { id: "mario", nome: "Mario D.", eta: 69, comune: "Este" },
-  { id: "luigi", nome: "Luigi M.", eta: 66, comune: "Este" },
+  { id: "franco", nome: "Franco B.", eta: 74, comune: "Conselve", profilo: P("65-75", "1", "localizzato", "robotica", "no", "buona", "si") },
+  { id: "rosa", nome: "Rosa C.", eta: 68, comune: "Este", profilo: P("65-75", "0", "localizzato", "robotica", "no", "scarsa", "si") },
+  { id: "sergio", nome: "Sergio P.", eta: 71, comune: "Monselice", profilo: P("65-75", "2+", "localmente_avanzato", "aperta", "si", "parziale", "no") },
+  { id: "bruno", nome: "Bruno L.", eta: 77, comune: "Bagnoli di Sopra", profilo: P(">75", "1", "localizzato", "aperta", "no", "parziale", "si") },
+  { id: "mario", nome: "Mario D.", eta: 69, comune: "Este", profilo: P("65-75", "0", "localizzato", "robotica", "no", "buona", "si") },
+  { id: "luigi", nome: "Luigi M.", eta: 66, comune: "Este", profilo: P("65-75", "0", "localizzato", "robotica", "no", "buona", "no") },
 ];
 
 /** Stato di partenza delle schede degli altri pazienti (vedi stato/store.ts). */

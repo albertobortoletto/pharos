@@ -27,6 +27,8 @@ export function caricaSalvataggio(): Stato | null {
       Array.isArray(t.racconto.confermate) &&
       t.giovanni &&
       t.posti &&
+      t.controlli &&
+      typeof t.controlli === "object" &&
       t.mappa &&
       t.pesi &&
       Array.isArray(t.notifiche) &&
